@@ -4,7 +4,7 @@ import micro_kernel_config
 import queue
 
 
-class Actor(concurrent.futures.Future):
+class Actor(abc.ABC):
 
     def __init__(self):
         self.config = micro_kernel_config.MicroKernelConfig()
@@ -31,7 +31,6 @@ class Actor(concurrent.futures.Future):
     def on_shutdown(self):
         pass
 
-    #@Override
     def call(self):
         while self.is_running and not self.is_complete:
             try:

@@ -27,24 +27,21 @@ class MicroKernel(object):
             return False
 
     def start(self):
-        monitor = callable()
+        def monitor():
+            def call():
+                while self.is_running or bool(self.actor_future):
+                    for key, value in self.actor_future.items():
+                        future = value
+                        is_remove = False
+                        try:
+                            obj = future.result()
+                            is_remove = True
+                        except TimeoutError:
+                            pass
+                        if is_remove:
+                            value.on_complete()
 
-        #@Override
-        def call():
-
-            while self.is_running or bool(self.actor_future):
-                for key, value in self.actor_future.items():
-                    future = value
-                    is_remove = False
-                    try:
-                        obj = future.result()
-                        is_remove = True
-                    except TimeoutError:
-                        pass
-                    if is_remove:
-                        value.on_complete()
-
-            return None
+                return None
 
         self.monitor_future = self.pool.submit(monitor)
 

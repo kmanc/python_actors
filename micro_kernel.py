@@ -1,4 +1,3 @@
-import actor
 import concurrent.futures
 import micro_kernel_config
 from actor import Actor

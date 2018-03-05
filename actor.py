@@ -7,12 +7,12 @@ import queue
 class Actor(abc.ABC):
 
     def __init__(self):
-        self.config = micro_kernel_config.MicroKernelConfig()
+        self.config = None
+        self.actor_lookup = None
 
         self.is_running = True
         self.is_complete = False
         self.message_queue = queue.Queue()
-        self.actor_lookup = dict()
 
     @abc.abstractclassmethod
     def on_receive(self, message):
@@ -22,8 +22,9 @@ class Actor(abc.ABC):
     def get_name(self):
         pass
 
-    def on_init(self):
-        pass
+    def on_init(self, lookup, config ):
+        self.config = config
+        self.actor_lookup = lookup
 
     def on_complete(self):
         pass
@@ -31,23 +32,24 @@ class Actor(abc.ABC):
     def on_shutdown(self):
         pass
 
-    def call(self):
-        while self.is_running and not self.is_complete:
+    @staticmethod
+    def call(actor):
+        while actor.is_running and not actor.is_complete:
             try:
-                message = self.message_queue.get_nowait()
+                message = actor.message_queue.get_nowait()
             except queue.Empty:
                 message = None
             if message:
-                size = self.message_queue.qsize()
-                half = self.config.ACTOR_MESSAGE_QUEUE_SIZE >> 1
+                size = actor.message_queue.qsize()
+                half = actor.config.ACTOR_MESSAGE_QUEUE_SIZE >> 1
                 if size == 0:
-                    self.on_receive(message)
+                    actor.on_receive(message)
                 elif size > half:
                     array = list()
                     for i in range(half):
-                        array.append(self.message_queue.get_nowait())
+                        array.append(actor.message_queue.get_nowait())
                     for stored_message in array:
-                        self.on_receive(stored_message)
+                        actor.on_receive(stored_message)
         return
 
     def post(self, message):

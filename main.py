@@ -11,12 +11,14 @@ class A(Actor):
     def get_name(self):
         return "A"
 
+
 class B(Actor):
     def on_receive(self, message):
         print(message)
 
     def get_name(self):
         return "B"
+
 
 kernel = MicroKernel()
 

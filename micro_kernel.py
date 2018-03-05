@@ -1,6 +1,7 @@
 import actor
 import concurrent.futures
 import micro_kernel_config
+from actor import Actor
 
 
 class MicroKernel(object):
@@ -19,31 +20,33 @@ class MicroKernel(object):
         if self.can_submit:
             name = actor_instance.get_name()
             self.actor_lookup[name] = actor_instance
-            actor_instance.__init__(self.actor_lookup, self.micro_kernel_config)
-            actor_instance.on_init()
-            self.actor_future[name] = self.pool.submit(actor_instance)
+            actor_instance.on_init(self.actor_lookup, self.micro_kernel_config)
+            self.actor_future[name] = self.pool.submit(Actor.call, actor_instance)
             return True
         else:
             return False
 
+    def post(self, name, message):
+        actor = self.actor_lookup(name)
+        actor.post(message)
+
     def start(self):
-        def monitor():
-            def call():
-                while self.is_running or bool(self.actor_future):
-                    for key, value in self.actor_future.items():
-                        future = value
-                        is_remove = False
-                        try:
-                            obj = future.result()
-                            is_remove = True
-                        except TimeoutError:
-                            pass
-                        if is_remove:
-                            value.on_complete()
+        self.monitor_future = self.pool.submit(self.monitor, self)
 
-                return None
-
-        self.monitor_future = self.pool.submit(monitor)
+    @staticmethod
+    def monitor(kernel):
+        while kernel.is_running or bool(kernel.actor_future):
+            for key, value in kernel.actor_future.items():
+                future = value
+                is_remove = False
+                try:
+                    obj = future.result()
+                    is_remove = True
+                except TimeoutError:
+                    pass
+                if is_remove:
+                    value.on_complete()
+        return None
 
     def shutdown(self):
         self.can_submit = False
@@ -51,3 +54,4 @@ class MicroKernel(object):
         for entry in self.actor_lookup.values():
             entry.shutdown()
         self.pool.shutdown()
+

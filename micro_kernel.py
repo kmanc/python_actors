@@ -26,7 +26,7 @@ class MicroKernel(object):
             return False
 
     def post(self, name, message):
-        actor = self.actor_lookup(name)
+        actor = self.actor_lookup[name]
         actor.post(message)
 
     def start(self):
@@ -53,4 +53,3 @@ class MicroKernel(object):
         for entry in self.actor_lookup.values():
             entry.shutdown()
         self.pool.shutdown()
-

@@ -35,9 +35,11 @@ class MicroKernel(object):
     @staticmethod
     def monitor(kernel):
         while kernel.is_running or bool(kernel.actor_future):
-            futures_iterator = ((key, value) for (key, value) in kernel.actor_future.items())
-            print(type(futures_iterator))
-            for actor_name, actor_future in futures_iterator:
+            futures_list = list((key, value) for (key, value) in kernel.actor_future.items())
+            for actor_name, actor_future in futures_list:
+                #print(futures_list)
+                #print(actor_name, actor_future)
+                #print(kernel.actor_future)
                 is_remove = False
                 try:
                     obj = actor_future.result()
@@ -48,7 +50,10 @@ class MicroKernel(object):
                     actor = kernel.actor_lookup[actor_name]
                     del kernel.actor_future[actor_name]
                     del kernel.actor_lookup[actor_name]
+                    #print(f'about to complete {actor_name}')
                     actor.on_complete()
+                    #print(f'just completed {actor_name}')
+                    #print(futures_list)
         return None
 
     def shutdown(self):

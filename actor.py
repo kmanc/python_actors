@@ -25,6 +25,7 @@ class Actor(abc.ABC):
         self.actor_lookup = lookup
 
     def on_complete(self):
+        print('actor on_complete')
         pass
 
     def on_shutdown(self):

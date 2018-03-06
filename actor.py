@@ -20,7 +20,7 @@ class Actor(abc.ABC):
     def get_name(self):
         pass
 
-    def on_init(self, lookup, config ):
+    def on_init(self, lookup, config):
         self.config = config
         self.actor_lookup = lookup
 

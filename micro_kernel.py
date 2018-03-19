@@ -37,24 +37,18 @@ class MicroKernel(object):
         while kernel.is_running or bool(kernel.actor_future):
             futures_list = list((key, value) for (key, value) in kernel.actor_future.items())
             for actor_name, actor_future in futures_list:
-                #print(futures_list)
-                #print(actor_name, actor_future)
-                #print(kernel.actor_future)
                 is_remove = False
                 try:
-                    obj = actor_future.result()
-                    is_remove = True
+                    is_remove = actor_future.result()
                 except TimeoutError:
                     pass
                 if is_remove is True:
+                    print(f'is remove true for {actor_name}')
                     actor = kernel.actor_lookup[actor_name]
                     del kernel.actor_future[actor_name]
                     del kernel.actor_lookup[actor_name]
-                    #print(f'about to complete {actor_name}')
                     actor.on_complete()
-                    #print(f'just completed {actor_name}')
-                    #print(futures_list)
-        return None
+        return
 
     def shutdown(self):
         self.can_submit = False

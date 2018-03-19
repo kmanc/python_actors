@@ -25,7 +25,7 @@ class Actor(abc.ABC):
         self.actor_lookup = lookup
 
     def on_complete(self):
-        print('actor on_complete')
+        print(f'Done with {self.get_name()}')
         pass
 
     def on_shutdown(self):
@@ -49,7 +49,7 @@ class Actor(abc.ABC):
                         array.append(actor.message_queue.get_nowait())
                     for stored_message in array:
                         actor.on_receive(stored_message)
-        return
+        return True
 
     def post(self, message):
         try:

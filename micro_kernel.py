@@ -35,19 +35,20 @@ class MicroKernel(object):
     @staticmethod
     def monitor(kernel):
         while kernel.is_running or bool(kernel.actor_future):
-            futures_list = list((key, value) for (key, value) in kernel.actor_future.items())
-            for actor_name, actor_future in futures_list:
-                is_remove = False
-                try:
-                    is_remove = actor_future.result()
-                except TimeoutError:
-                    pass
+            print('yo')
+            for actor_name, actor_future in kernel.actor_future.items():
+                print(actor_name, actor_future)
+                is_remove = actor_future.result()
                 if is_remove is True:
-                    print(f'is remove true for {actor_name}')
+                    print(f'is_remove true for {actor_name}')
+                    #print(f'the dictionaries look like so')
+                    #print(f'\n kernel actor future {kernel.actor_future}')
+                    #print(f'\n kernel actor lookup {kernel.actor_lookup}')
                     actor = kernel.actor_lookup[actor_name]
                     del kernel.actor_future[actor_name]
                     del kernel.actor_lookup[actor_name]
                     actor.on_complete()
+            print('im here')
         return
 
     def shutdown(self):

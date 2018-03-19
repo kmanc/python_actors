@@ -39,16 +39,8 @@ class Actor(abc.ABC):
             except queue.Empty:
                 message = None
             if message:
-                size = actor.message_queue.qsize()
-                half = actor.config.ACTOR_MESSAGE_QUEUE_SIZE >> 1
-                if size == 0:
-                    actor.on_receive(message)
-                elif size > half:
-                    array = list()
-                    for i in range(half):
-                        array.append(actor.message_queue.get_nowait())
-                    for stored_message in array:
-                        actor.on_receive(stored_message)
+                actor.on_receive(message)
+        actor.is_complete = True
         return True
 
     def post(self, message):
@@ -63,6 +55,3 @@ class Actor(abc.ABC):
     def shutdown(self):
         self.is_running = False
         self.on_shutdown()
-
-    def set_complete(self):
-        self.is_complete = True

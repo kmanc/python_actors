@@ -5,7 +5,6 @@ import queue
 class Actor(abc.ABC):
 
     def __init__(self):
-        self.config = None
         self.actor_lookup = None
 
         self.is_running = True
@@ -20,12 +19,10 @@ class Actor(abc.ABC):
     def get_name(self):
         pass
 
-    def on_init(self, lookup, config):
-        self.config = config
+    def on_init(self, lookup):
         self.actor_lookup = lookup
 
     def on_complete(self):
-        print(f'Done with {self.get_name()}')
         pass
 
     def on_shutdown(self):
@@ -36,10 +33,9 @@ class Actor(abc.ABC):
         while actor.is_running and not actor.is_complete:
             try:
                 message = actor.message_queue.get_nowait()
-            except queue.Empty:
-                message = None
-            if message:
                 actor.on_receive(message)
+            except queue.Empty:
+                pass
         actor.is_complete = True
         return True
 
@@ -47,7 +43,8 @@ class Actor(abc.ABC):
         try:
             return self.message_queue.put_nowait(message)
         except queue.Full:
-            print('I dont know what to do but the queue is full')
+            print('The queue is full')
+            exit(0)
 
     def do_lookup(self, name):
         return self.actor_lookup[name]

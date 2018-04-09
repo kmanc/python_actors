@@ -1,6 +1,5 @@
 import concurrent.futures
 import copy
-import time
 from actor import Actor
 
 
@@ -14,9 +13,9 @@ class MicroKernel(object):
         self.pool = concurrent.futures.ThreadPoolExecutor()
         self.monitor_future = concurrent.futures.Future()
 
-    def submit(self, actor_instance):
+    def submit(self, name, actor_instance):
         if self.can_submit:
-            name = actor_instance.get_name()
+            actor_instance.name = name
             self.actor_lookup[name] = actor_instance
             actor_instance.on_init(self.actor_lookup)
             self.actor_future[name] = self.pool.submit(Actor.call, actor_instance)

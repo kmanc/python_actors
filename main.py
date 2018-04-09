@@ -1,5 +1,6 @@
-from micro_kernel import MicroKernel
 from actor import Actor
+from actors.countdown_actor import CountdownActor
+from micro_kernel import MicroKernel
 import time
 
 
@@ -22,37 +23,28 @@ class A(Actor):
         c.post("and C C C C")
         self.is_complete = True
 
-    def get_name(self):
-        return "A"
 
-
-class B(Actor):
-    def on_receive(self, message):
+class B(CountdownActor):
+    def do_work(self, message):
         time.sleep(2)
         print(message)
 
-    def get_name(self):
-        return "B"
 
-
-class C(Actor):
-    def on_receive(self, message):
+class C(CountdownActor):
+    def do_work(self, message):
         time.sleep(2)
         print(message)
-
-    def get_name(self):
-        return "C"
 
 
 kernel = MicroKernel()
 
 a = A()
-b = B()
-c = C()
+b = B(count=6)
+c = C(count=6)
 
-kernel.submit(a)
-kernel.submit(b)
-kernel.submit(c)
+kernel.submit("A", a)
+kernel.submit("B", b)
+kernel.submit("C", c)
 a.post("I am asking A to print this message")
 
 kernel.start()

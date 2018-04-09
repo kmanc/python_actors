@@ -6,18 +6,17 @@ class Actor(abc.ABC):
 
     def __init__(self):
         self.actor_lookup = None
-
         self.is_running = True
         self.is_complete = False
         self.message_queue = queue.Queue()
+        self.name = None
 
     @classmethod
-    def on_receive(self, message):
+    def on_receive(cls, message):
         pass
 
-    @classmethod
     def get_name(self):
-        pass
+        return self.name
 
     def on_init(self, lookup):
         self.actor_lookup = lookup

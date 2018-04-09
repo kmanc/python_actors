@@ -34,7 +34,6 @@ class MicroKernel(object):
     @staticmethod
     def monitor(kernel):
         while kernel.is_running and bool(kernel.actor_future):
-            print(f'Loop with {len(kernel.actor_future.keys())} actors')
             actor_dict_copy = copy.copy(kernel.actor_future)
             for actor_name, actor_future in actor_dict_copy.items():
                 try:
@@ -45,17 +44,15 @@ class MicroKernel(object):
                     if is_complete is True:
                         actor.on_complete()
                 except concurrent.futures.TimeoutError:
-                    print(f'Timeout with {len(kernel.actor_future.keys())} actors')
+                    print(f'{len(kernel.actor_future.keys())} actors have not completed yet')
         kernel.is_running = False
         return True
 
     def shutdown(self, wait=False):
         self.can_submit = False
-        self.pool.shutdown(wait=wait)
         self.is_running = False
+        self.pool.shutdown(wait=wait)
         for entry in self.actor_lookup.values():
-            print(self.actor_lookup.values())
             entry.shutdown()
-        self.pool.shutdown(wait=True)
         return
 

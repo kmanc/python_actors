@@ -11,11 +11,11 @@ class Actor(abc.ABC):
         self.is_complete = False
         self.message_queue = queue.Queue()
 
-    @abc.abstractclassmethod
+    @classmethod
     def on_receive(self, message):
         pass
 
-    @abc.abstractclassmethod
+    @classmethod
     def get_name(self):
         pass
 

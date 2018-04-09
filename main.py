@@ -20,8 +20,7 @@ class A(Actor):
         c.post("and C C")
         c.post("and C C C")
         c.post("and C C C C")
-        if self.message_queue.empty():
-            self.is_complete = True
+        self.is_complete = True
 
     def get_name(self):
         return "A"
@@ -31,8 +30,6 @@ class B(Actor):
     def on_receive(self, message):
         time.sleep(2)
         print(message)
-        if self.message_queue.empty():
-            self.is_complete = True
 
     def get_name(self):
         return "B"
@@ -42,8 +39,6 @@ class C(Actor):
     def on_receive(self, message):
         time.sleep(2)
         print(message)
-        if self.message_queue.empty():
-            self.is_complete = True
 
     def get_name(self):
         return "C"
@@ -61,3 +56,6 @@ kernel.submit(c)
 a.post("I am asking A to print this message")
 
 kernel.start()
+print('calling shutdown')
+kernel.shutdown(True)
+print('kernel has shut down i think')

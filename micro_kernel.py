@@ -52,4 +52,3 @@ class MicroKernel(object):
         for entry in self.actor_lookup.values():
             entry.shutdown()
         return
-

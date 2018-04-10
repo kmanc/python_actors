@@ -49,8 +49,8 @@ class MicroKernel(object):
 
     def shutdown(self, wait=False):
         self.can_submit = False
-        self.is_running = False
         self.pool.shutdown(wait=wait)
+        self.is_running = False
         for entry in self.actor_lookup.values():
             entry.shutdown()
         return

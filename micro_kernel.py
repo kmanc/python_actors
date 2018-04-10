@@ -1,5 +1,4 @@
 import concurrent.futures
-import copy
 from actor import Actor
 
 

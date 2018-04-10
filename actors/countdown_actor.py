@@ -10,8 +10,7 @@ class CountdownActor(Actor):
     def on_receive(self, message):
         self.do_work(message)
         self.count -= 1
-        if self.count == 0:
-            self.is_complete = True
+        self.is_complete = not bool(self.count)
 
     @classmethod
     def do_work(cls, message):

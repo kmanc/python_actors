@@ -1,5 +1,6 @@
-from actor import Actor
+from actor import Actor, DoneMessage
 from actors.countdown_actor import CountdownActor
+from actors.splitter_actor import SplitterActor
 from micro_kernel import MicroKernel
 import time
 
@@ -48,6 +49,29 @@ kernel.submit("C", c)
 a.post("I am asking A to print this message")
 
 kernel.start()
-print('Calling shutdown')
+#print('Calling shutdown')
+#kernel.shutdown(True)
+#print('Kernel has shut down')
+
+print('Splitter test time')
+
+
+class D(Actor):
+    def on_receive(self, message):
+        if type(message) == DoneMessage:
+            self.is_complete = True
+        else:
+            print(message)
+
+
+d = D()
+e = D()
+kernel.submit("D", d)
+kernel.submit("E", e)
+f = SplitterActor(["D", "E"])
+kernel.submit("F", f)
+messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+f.post(messages)
 kernel.shutdown(True)
-print('Kernel has shut down')
+
+

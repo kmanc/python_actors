@@ -6,9 +6,10 @@ class SplitterActor(Actor):
     def __init__(self, key_list):
         super().__init__()
         self.key_list = key_list
+        self.loop = True
 
     def on_receive(self, message_list):
-        while True:
+        while self.loop:
             for key in self.key_list:
                 try:
                     instance = self.do_lookup(key)
@@ -18,4 +19,4 @@ class SplitterActor(Actor):
                         shut_me_down = self.do_lookup(needs_shutdown)
                         shut_me_down.post(DoneMessage())
                     self.is_complete = True
-                    return
+                    self.loop = False

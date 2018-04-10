@@ -31,32 +31,7 @@ class B(CountdownActor):
         print(message)
 
 
-class C(CountdownActor):
-    def do_work(self, message):
-        time.sleep(2)
-        print(message)
-
-
-kernel = MicroKernel()
-
-a = A()
-b = B(count=6)
-c = C(count=6)
-
-kernel.submit("A", a)
-kernel.submit("B", b)
-kernel.submit("C", c)
-a.post("I am asking A to print this message")
-
-kernel.start()
-#print('Calling shutdown')
-#kernel.shutdown(True)
-#print('Kernel has shut down')
-
-print('Splitter test time')
-
-
-class D(Actor):
+class C(Actor):
     def on_receive(self, message):
         if type(message) == DoneMessage:
             self.is_complete = True
@@ -64,12 +39,24 @@ class D(Actor):
             print(message)
 
 
-d = D()
-e = D()
+kernel = MicroKernel()
+
+a = A()
+b = B(count=6)
+c = B(count=6)
+d = C()
+e = C()
+f = SplitterActor(["D", "E"])
+
+kernel.submit("A", a)
+kernel.submit("B", b)
+kernel.submit("C", c)
 kernel.submit("D", d)
 kernel.submit("E", e)
-f = SplitterActor(["D", "E"])
 kernel.submit("F", f)
+
+kernel.start()
+a.post("I am asking A to print this message")
 messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
 f.post(messages)
 kernel.shutdown(True)

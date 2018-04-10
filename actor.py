@@ -56,3 +56,7 @@ class Actor(abc.ABC):
 
     def shutdown(self):
         self.is_running = False
+
+
+class DoneMessage:
+    pass

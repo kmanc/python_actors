@@ -1,8 +1,8 @@
+import time
 from actor import Actor, DoneMessage
 from actors.countdown_actor import CountdownActor
 from actors.splitter_actor import SplitterActor
 from micro_kernel import MicroKernel
-import time
 
 
 class A(Actor):

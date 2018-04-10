@@ -33,10 +33,9 @@ class MicroKernel(object):
     @staticmethod
     def monitor(kernel):
         while kernel.is_running and bool(kernel.actor_future):
-            actor_dict_copy = copy.copy(kernel.actor_future)
-            for actor_name, actor_future in actor_dict_copy.items():
+            for actor_name in kernel.actor_future.keys():
                 try:
-                    is_complete = actor_future.result(timeout=5)
+                    is_complete = kernel.actor_future[actor_name].result(timeout=5)
                     actor = kernel.actor_lookup[actor_name]
                     del kernel.actor_future[actor_name]
                     del kernel.actor_lookup[actor_name]

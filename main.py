@@ -1,6 +1,8 @@
 import time
 from actor import Actor, DoneMessage
+from actors.batch_split_actor import BatchSplitActor
 from actors.countdown_actor import CountdownActor
+from actors.join_actor import JoinActor
 from actors.split_actor import SplitActor
 from micro_kernel import MicroKernel
 
@@ -32,11 +34,15 @@ class B(CountdownActor):
 
 
 class C(Actor):
+
     def on_receive(self, message):
         if type(message) == DoneMessage:
+            g = self.do_lookup("G")
+            g.post(DoneMessage())
             self.is_complete = True
         else:
-            print(message)
+            g = self.do_lookup("G")
+            g.post(message)
 
 
 kernel = MicroKernel()
@@ -47,6 +53,7 @@ c = B(count=6)
 d = C()
 e = C()
 f = SplitActor(["D", "E"])
+g = JoinActor(["D", "E"])
 
 kernel.submit("A", a)
 kernel.submit("B", b)
@@ -54,11 +61,13 @@ kernel.submit("C", c)
 kernel.submit("D", d)
 kernel.submit("E", e)
 kernel.submit("F", f)
+kernel.submit('G', g)
 
 kernel.start()
 a.post("I am asking A to print this message")
 messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
 f.post(messages)
+f.post(DoneMessage())
 kernel.shutdown(True)
 
 

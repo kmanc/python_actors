@@ -1,7 +1,7 @@
 from actor import Actor, DoneMessage
 
 
-class SplitterActor(Actor):
+class SplitActor(Actor):
 
     def __init__(self, key_list):
         super().__init__()

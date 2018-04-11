@@ -9,14 +9,16 @@ class SplitActor(Actor):
         self.loop = True
 
     def on_receive(self, message):
-        while self.loop:
-            for key in self.key_list:
-                try:
-                    instance = self.do_lookup(key)
-                    instance.post(message.pop(0))
-                except IndexError:
-                    for needs_shutdown in self.key_list:
-                        shut_me_down = self.do_lookup(needs_shutdown)
-                        shut_me_down.post(DoneMessage())
-                    self.is_complete = True
-                    self.loop = False
+        if type(message) == DoneMessage:
+            self.is_complete = True
+        else:
+            while self.loop:
+                for key in self.key_list:
+                    try:
+                        instance = self.do_lookup(key)
+                        instance.post(message.pop(0))
+                    except IndexError:
+                        for needs_shutdown in self.key_list:
+                            shut_me_down = self.do_lookup(needs_shutdown)
+                            shut_me_down.post(DoneMessage())
+                        self.loop = False

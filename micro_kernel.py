@@ -32,7 +32,7 @@ class MicroKernel(object):
     @staticmethod
     def monitor(kernel):
         while kernel.is_running and bool(kernel.actor_future):
-            for actor_name in kernel.actor_future.keys():
+            for actor_name in list(kernel.actor_future):
                 try:
                     is_complete = kernel.actor_future[actor_name].result(timeout=5)
                     actor = kernel.actor_lookup[actor_name]
@@ -41,7 +41,7 @@ class MicroKernel(object):
                     if is_complete is True:
                         actor.on_complete()
                 except concurrent.futures.TimeoutError:
-                    print(f'{len(kernel.actor_future.keys())} actors have not completed yet')
+                    print(f'Actor(s) {", ".join(list(kernel.actor_future))} has/have not completed yet')
         kernel.is_running = False
         return True
 

@@ -1,29 +1,24 @@
 import abc
-import concurrent.futures
-import micro_kernel_config
 import queue
 
 
 class Actor(abc.ABC):
 
     def __init__(self):
-        self.config = None
         self.actor_lookup = None
-
         self.is_running = True
         self.is_complete = False
         self.message_queue = queue.Queue()
+        self.name = None
 
-    @abc.abstractclassmethod
-    def on_receive(self, message):
+    @classmethod
+    def on_receive(cls, message):
         pass
 
-    @abc.abstractclassmethod
     def get_name(self):
-        pass
+        return self.name
 
-    def on_init(self, lookup, config ):
-        self.config = config
+    def on_init(self, lookup):
         self.actor_lookup = lookup
 
     def on_complete(self):
@@ -34,36 +29,34 @@ class Actor(abc.ABC):
 
     @staticmethod
     def call(actor):
-        while actor.is_running and not actor.is_complete:
+        while actor.is_running:
+            if actor.is_complete:
+                break
             try:
                 message = actor.message_queue.get_nowait()
+                actor.on_receive(message)
             except queue.Empty:
-                message = None
-            if message:
-                size = actor.message_queue.qsize()
-                half = actor.config.ACTOR_MESSAGE_QUEUE_SIZE >> 1
-                if size == 0:
-                    actor.on_receive(message)
-                elif size > half:
-                    array = list()
-                    for i in range(half):
-                        array.append(actor.message_queue.get_nowait())
-                    for stored_message in array:
-                        actor.on_receive(stored_message)
-        return
+                pass
+        actor.on_shutdown()
+        return actor.is_complete
 
     def post(self, message):
         try:
+            assert self.is_running is True and self.is_complete is False
             return self.message_queue.put_nowait(message)
         except queue.Full:
-            print('I dont know what to do but the queue is full')
+            print('The queue is full')
+            exit(0)
+        except AssertionError:
+            print('Stop sending me shit, I\'m done')
+            exit(0)
 
     def do_lookup(self, name):
         return self.actor_lookup[name]
 
     def shutdown(self):
         self.is_running = False
-        self.on_shutdown()
 
-    def set_complete(self):
-        self.is_complete = True
+
+class DoneMessage:
+    pass

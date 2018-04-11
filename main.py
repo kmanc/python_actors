@@ -1,7 +1,7 @@
 import time
 from actor import Actor, DoneMessage
 from actors.countdown_actor import CountdownActor
-from actors.splitter_actor import SplitterActor
+from actors.split_actor import SplitActor
 from micro_kernel import MicroKernel
 
 
@@ -46,7 +46,7 @@ b = B(count=6)
 c = B(count=6)
 d = C()
 e = C()
-f = SplitterActor(["D", "E"])
+f = SplitActor(["D", "E"])
 
 kernel.submit("A", a)
 kernel.submit("B", b)

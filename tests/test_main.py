@@ -44,27 +44,29 @@ class C(Actor):
             g.post(message)
 
 
-kernel = MicroKernel()
+class TestActors:
+    def test_system(self):
+        kernel = MicroKernel()
 
-a = A()
-b = B(count=6)
-c = B(count=6)
-d = C()
-e = C()
-f = SplitActor(["D", "E"])
-g = JoinActor(["D", "E"])
+        a = A()
+        b = B(count=6)
+        c = B(count=6)
+        d = C()
+        e = C()
+        f = SplitActor(["D", "E"])
+        g = JoinActor(["D", "E"])
 
-kernel.submit("A", a)
-kernel.submit("B", b)
-kernel.submit("C", c)
-kernel.submit("D", d)
-kernel.submit("E", e)
-kernel.submit("F", f)
-kernel.submit('G', g)
+        kernel.submit("A", a)
+        kernel.submit("B", b)
+        kernel.submit("C", c)
+        kernel.submit("D", d)
+        kernel.submit("E", e)
+        kernel.submit("F", f)
+        kernel.submit('G', g)
 
-kernel.start()
-a.post("I am asking A to print this message")
-messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
-f.post(messages)
-f.post(DoneMessage())
-kernel.shutdown(True)
+        kernel.start()
+        a.post("I am asking A to print this message")
+        messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+        f.post(messages)
+        f.post(DoneMessage())
+        kernel.shutdown(True)

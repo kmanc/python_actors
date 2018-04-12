@@ -1,10 +1,10 @@
 import time
-from actor import Actor, DoneMessage
-from actors.batch_split_actor import BatchSplitActor
-from actors.countdown_actor import CountdownActor
-from actors.join_actor import JoinActor
-from actors.split_actor import SplitActor
-from micro_kernel import MicroKernel
+from actors.actor import Actor, DoneMessage
+from actors.micro_kernel import MicroKernel
+from actors.prebuilt.batch_split_actor import BatchSplitActor
+from actors.prebuilt.countdown_actor import CountdownActor
+from actors.prebuilt.join_actor import JoinActor
+from actors.prebuilt.split_actor import SplitActor
 
 
 class A(Actor):
@@ -34,7 +34,6 @@ class B(CountdownActor):
 
 
 class C(Actor):
-
     def on_receive(self, message):
         if type(message) == DoneMessage:
             g = self.do_lookup("G")
@@ -69,5 +68,3 @@ messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
 f.post(messages)
 f.post(DoneMessage())
 kernel.shutdown(True)
-
-

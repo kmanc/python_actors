@@ -1,5 +1,5 @@
 import concurrent.futures
-from actor import Actor
+from actors.actor import Actor
 
 
 class MicroKernel(object):

@@ -1,4 +1,4 @@
-from actor import Actor, DoneMessage, FlushMessage
+from actors.actor import Actor, DoneMessage, FlushMessage
 
 
 class BatchSplitActor(Actor):

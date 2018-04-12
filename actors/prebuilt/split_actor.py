@@ -1,4 +1,4 @@
-from actor import Actor, DoneMessage
+from actors.actor import Actor, DoneMessage
 
 
 class SplitActor(Actor):

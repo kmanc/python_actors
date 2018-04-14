@@ -60,3 +60,7 @@ class Actor(abc.ABC):
 
 class DoneMessage:
     pass
+
+
+class FlushMessage:
+    pass

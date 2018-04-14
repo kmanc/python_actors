@@ -1,0 +1,24 @@
+from actors.actor import Actor, DoneMessage
+
+
+class SplitActor(Actor):
+
+    def __init__(self, key_list):
+        super().__init__()
+        self.key_list = key_list
+        self.loop = True
+
+    def on_receive(self, message):
+        if type(message) == DoneMessage:
+            self.is_complete = True
+        else:
+            while self.loop:
+                for key in self.key_list:
+                    try:
+                        instance = self.do_lookup(key)
+                        instance.post(message.pop(0))
+                    except IndexError:
+                        for needs_shutdown in self.key_list:
+                            shut_me_down = self.do_lookup(needs_shutdown)
+                            shut_me_down.post(DoneMessage())
+                        self.loop = False

@@ -32,5 +32,5 @@ setup(
     setup_requires=[
         'pytest-runner',
     ],
-    tests_require=['pytest', 'pytest-env', 'mock']
+    tests_require=['pytest']
 )

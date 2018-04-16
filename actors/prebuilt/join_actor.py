@@ -1,4 +1,5 @@
 from actors.actor import Actor, DoneMessage
+from log_config import actor_logger
 
 
 class JoinActor(Actor):
@@ -15,7 +16,10 @@ class JoinActor(Actor):
             if self.num_done >= len(self.key_list):
                 self.is_complete = True
         else:
-            self.results.append(message)
+            try:
+                self.results.extend(message)
+            except TypeError:
+                self.results.append(message)
 
     def on_complete(self):
-        print(self.results)
+        actor_logger.info(f'{self.name} has finished')

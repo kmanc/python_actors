@@ -49,7 +49,7 @@ class Actor(abc.ABC):
             actor_logger.error(f'The queue for {self.name} is full, shutting down')
             self.shutdown()
         except AssertionError:
-            actor_logger.error(f'A message {self.name} after it stopped running or was marked as complete')
+            actor_logger.error(f'A message was sent to {self.name} after it stopped running or was marked as complete')
             self.shutdown()
 
     def do_lookup(self, name):

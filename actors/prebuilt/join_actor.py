@@ -23,3 +23,4 @@ class JoinActor(Actor):
 
     def on_complete(self):
         actor_logger.info(f'{self.name} has finished')
+        actor_logger.debug(f'{self.results}')

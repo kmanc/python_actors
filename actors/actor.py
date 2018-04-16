@@ -1,5 +1,6 @@
 import abc
 import queue
+from log_config import actor_logger
 
 
 class Actor(abc.ABC):
@@ -22,9 +23,11 @@ class Actor(abc.ABC):
         self.actor_lookup = lookup
 
     def on_complete(self):
+        actor_logger.info(f'{self.name} has finished')
         pass
 
     def on_shutdown(self):
+        actor_logger.info(f'{self.name} was shut down')
         pass
 
     @staticmethod
@@ -45,10 +48,10 @@ class Actor(abc.ABC):
             assert self.is_running is True and self.is_complete is False
             return self.message_queue.put_nowait(message)
         except queue.Full:
-            print('The queue is full')
+            actor_logger.error(f'The queue for {self.name} is full, exiting')
             exit(0)
         except AssertionError:
-            print('Stop sending me shit, I\'m done')
+            actor_logger.error(f'A message {self.name} after it was completed')
             exit(0)
 
     def do_lookup(self, name):

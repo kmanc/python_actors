@@ -15,7 +15,9 @@ class BatchSplitActor(Actor):
         if type(message) == DoneMessage:
             for key in self.key_list:
                 instance = self.do_lookup(key)
-                instance.post(self.batch_dict[key])
+                final_batch = self.batch_dict[key]
+                if final_batch:
+                    instance.post(final_batch)
                 instance.post(DoneMessage())
             self.is_complete = True
         elif type(message) == FlushMessage:
@@ -33,7 +35,7 @@ class BatchSplitActor(Actor):
                             instance = self.do_lookup(key)
                             instance.post(self.batch_dict[key])
                             self.batch_dict[key] = []
-            except IndexError:
+            except StopIteration:
                 self.loop = False
             except TypeError:
                 actor_logger.error(f'{self.name} was given a non-iterable message')

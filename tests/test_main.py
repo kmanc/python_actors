@@ -5,10 +5,12 @@ from actors.prebuilt.batch_split_actor import BatchSplitActor
 from actors.prebuilt.countdown_actor import CountdownActor
 from actors.prebuilt.join_actor import JoinActor
 from actors.prebuilt.split_actor import SplitActor
+from log_config import actor_logger
 
 
 class A(Actor):
     def on_receive(self, message):
+        actor_logger.debug(message)
         b = self.do_lookup("B")
         c = self.do_lookup("C")
         b.post("A is asking B to print this message")
@@ -29,7 +31,7 @@ class A(Actor):
 class B(CountdownActor):
     def do_work(self, message):
         time.sleep(2)
-        print(message)
+        actor_logger.debug(message)
 
 
 class C(Actor):

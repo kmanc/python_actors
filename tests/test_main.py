@@ -92,8 +92,9 @@ class TestActors:
         messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
         f.post(messages)
         f.post(done)
-        batch = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+        batch = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
         j.post(batch)
         j.post(flush)
+        j.post([20])
         j.post(done)
         kernel.shutdown(True)

@@ -41,17 +41,3 @@ with a list of children, and optionally a batch size (default is 256).
 A join actor accepts messages from multiple parent actors and adds them to a list. When a join actor is defined, a
 list of parent actors must be provided. When all parent actors have indicated that they are done sending messages,
 the join actor will send the list back to ____ and complete.
-
-
-
-# TODO
-
-Should the types of join, batch split, and split actors be iterators to save space?
-The code below works as an append for iterators
-
-`from itertools import chain`
-
-`y_iter = chain(l1, l2`
-
-Should the concept of a DoneMessage setting the actor to complete be moved up to the base Actor class? I'm defining that
-behavior everywhere

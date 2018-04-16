@@ -23,7 +23,9 @@ class BatchSplitActor(Actor):
         elif type(message) == FlushMessage:
             for key in self.key_list:
                 instance = self.do_lookup(key)
-                instance.post(self.batch_dict[key])
+                flush_batch = self.batch_dict[key]
+                if flush_batch:
+                    instance.post(flush_batch)
                 self.batch_dict[key] = []
         else:
             try:

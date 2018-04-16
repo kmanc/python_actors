@@ -11,6 +11,9 @@ class SplitActor(Actor):
 
     def on_receive(self, message):
         if type(message) == DoneMessage:
+            for needs_shutdown in self.key_list:
+                shut_me_down = self.do_lookup(needs_shutdown)
+                shut_me_down.post(DoneMessage())
             self.is_complete = True
         else:
             try:
@@ -20,9 +23,6 @@ class SplitActor(Actor):
                         instance = self.do_lookup(key)
                         instance.post(next(message_iterable))
             except StopIteration:
-                for needs_shutdown in self.key_list:
-                    shut_me_down = self.do_lookup(needs_shutdown)
-                    shut_me_down.post(DoneMessage())
                 self.loop = False
             except TypeError:
                 actor_logger.error(f'{self.name} was given a non-iterable message')

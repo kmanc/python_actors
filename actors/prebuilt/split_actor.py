@@ -7,7 +7,6 @@ class SplitActor(Actor):
     def __init__(self, key_list):
         super().__init__()
         self.key_list = key_list
-        self.loop = True
 
     def on_receive(self, message):
         if type(message) == DoneMessage:
@@ -18,12 +17,12 @@ class SplitActor(Actor):
         else:
             try:
                 message_iterable = iter(message)
-                while self.loop:
+                while True:
                     for key in self.key_list:
                         instance = self.do_lookup(key)
                         instance.post(next(message_iterable))
             except StopIteration:
-                self.loop = False
+                pass
             except TypeError:
                 actor_logger.error(f'{self.name} was given a non-iterable message')
                 self.shutdown()

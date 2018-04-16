@@ -26,4 +26,4 @@ class SplitActor(Actor):
                 self.loop = False
             except TypeError:
                 actor_logger.error(f'{self.name} was given a non-iterable message')
-                exit(0)
+                self.shutdown()

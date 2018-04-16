@@ -9,7 +9,6 @@ from actors.prebuilt.split_actor import SplitActor
 
 class A(Actor):
     def on_receive(self, message):
-        print(message)
         b = self.do_lookup("B")
         c = self.do_lookup("C")
         b.post("A is asking B to print this message")

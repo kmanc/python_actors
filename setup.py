@@ -8,17 +8,14 @@ def read(filename):
 
 
 setup(
-    name="actors",
+    name="pythonactors",
     version="0.0.1",
     author="Kevin Conley",
     author_email="kmanc@comcast.net",
-    description="Actors for python concurrency",
+    description="Simple Python actor implementation",
     keywords="Python, Actor, Concurrency, Parallelism",
     url="https://github.com/kmanc/python_actors",
     packages=['actors'],
-    # scripts=[
-    #     'bin/start.py'
-    # ],
     long_description=read('README.md'),
     classifiers=[
         "Development Status :: 4 - Beta",

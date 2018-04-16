@@ -24,11 +24,9 @@ class Actor(abc.ABC):
 
     def on_complete(self):
         actor_logger.info(f'{self.name} has finished')
-        pass
 
     def on_shutdown(self):
         actor_logger.info(f'{self.name} was shut down')
-        pass
 
     @staticmethod
     def call(actor):
@@ -48,11 +46,11 @@ class Actor(abc.ABC):
             assert self.is_running is True and self.is_complete is False
             return self.message_queue.put_nowait(message)
         except queue.Full:
-            actor_logger.error(f'The queue for {self.name} is full, exiting')
-            exit(0)
+            actor_logger.error(f'The queue for {self.name} is full, shutting down')
+            self.shutdown()
         except AssertionError:
-            actor_logger.error(f'A message {self.name} after it was completed')
-            exit(0)
+            actor_logger.error(f'A message {self.name} after it stopped running or was marked as complete')
+            self.shutdown()
 
     def do_lookup(self, name):
         return self.actor_lookup[name]

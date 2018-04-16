@@ -1,4 +1,5 @@
 from actors.actor import Actor, DoneMessage, FlushMessage
+from log_config import actor_logger
 
 
 class BatchSplitActor(Actor):
@@ -23,13 +24,17 @@ class BatchSplitActor(Actor):
                 instance.post(self.batch_dict[key])
                 self.batch_dict[key] = []
         else:
-            while self.loop:
-                for key in self.key_list:
-                    try:
-                        self.batch_dict[key].append(message.pop(0))
+            try:
+                message_iterable = iter(message)
+                while self.loop:
+                    for key in self.key_list:
+                        self.batch_dict[key].append(next(message_iterable))
                         if len(self.batch_dict[key]) >= self.batch_size:
                             instance = self.do_lookup(key)
                             instance.post(self.batch_dict[key])
                             self.batch_dict[key] = []
-                    except IndexError:
-                        self.loop = False
+            except IndexError:
+                self.loop = False
+            except TypeError:
+                actor_logger.error(f'{self.name} was given a non-iterable message')
+                exit(0)

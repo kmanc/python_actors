@@ -42,7 +42,7 @@ class MicroKernel(object):
                     if is_complete is True:
                         actor.on_complete()
                 except concurrent.futures.TimeoutError:
-                    actor_logger.error(f'Actor(s) {", ".join(list(kernel.actor_future))} has/have not completed yet')
+                    actor_logger.debug(f'Actor(s) {", ".join(list(kernel.actor_future))} has/have not completed yet')
         kernel.is_running = False
         return True
 

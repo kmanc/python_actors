@@ -1,5 +1,4 @@
 from actors.actor import Actor, DoneMessage
-from log_config import actor_logger
 
 
 class JoinActor(Actor):
@@ -20,7 +19,3 @@ class JoinActor(Actor):
                 self.results.extend(message)
             except TypeError:
                 self.results.append(message)
-
-    def on_complete(self):
-        actor_logger.info(f'{self.name} has finished')
-        actor_logger.debug(f'{self.results}')

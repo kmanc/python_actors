@@ -1,5 +1,5 @@
 import time
-from actors.actor import Actor, DoneMessage, FlushMessage
+from actors.actor import Actor, CallbackFuture, DoneMessage, FlushMessage
 from actors.micro_kernel import MicroKernel
 from actors.prebuilt.batch_split_actor import BatchSplitActor
 from actors.prebuilt.countdown_actor import CountdownActor
@@ -56,9 +56,22 @@ class D(Actor):
             g.post(message)
 
 
+class E(JoinActor):
+    def __init__(self, key_list, cb):
+        super().__init__(key_list)
+        self.cb = cb
+
+    def on_complete(self):
+        self.cb.callback(self.results)
+
+
 class TestActors:
     def test_system(self):
         kernel = MicroKernel()
+
+        flush = FlushMessage()
+        done = DoneMessage()
+        call = CallbackFuture()
 
         a = A()
         b = B(count=6)
@@ -70,10 +83,7 @@ class TestActors:
         h = D()
         i = D()
         j = BatchSplitActor(["H", "I"], batch_size=4)
-        k = JoinActor(["H", "I"])
-
-        flush = FlushMessage()
-        done = DoneMessage()
+        k = E(["H", "I"], call)
 
         kernel.submit("A", a)
         kernel.submit("B", b)
@@ -97,4 +107,6 @@ class TestActors:
         j.post(flush)
         j.post([20])
         j.post(done)
+        results = call.done()
+        actor_logger.info(f'The joiner is done: {results}')
         kernel.shutdown(True)

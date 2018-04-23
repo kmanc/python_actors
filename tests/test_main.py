@@ -30,7 +30,7 @@ class A(Actor):
 
 class B(CountdownActor):
     def do_work(self, message):
-        time.sleep(2)
+        time.sleep(1)
         actor_logger.debug(message)
 
 

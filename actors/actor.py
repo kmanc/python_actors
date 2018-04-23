@@ -1,5 +1,6 @@
 import abc
 import queue
+from threading import Lock
 from log_config import actor_logger
 
 
@@ -57,6 +58,27 @@ class Actor(abc.ABC):
 
     def shutdown(self):
         self.is_running = False
+
+
+class CallbackFuture:
+
+    def __init__(self):
+        self.results = None
+        self.mu = Lock()
+        self.mu.acquire()
+
+    def callback(self, data):
+        try:
+            self.results = data
+        finally:
+            self.mu.release()
+
+    def done(self):
+        try:
+            self.mu.acquire()
+            return self.results
+        finally:
+            self.mu.release()
 
 
 class DoneMessage:

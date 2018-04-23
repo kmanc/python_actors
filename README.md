@@ -40,4 +40,16 @@ with a list of children, and optionally a batch size (default is 256).
 
 A join actor accepts messages from multiple parent actors and adds them to a list. When a join actor is defined, a
 list of parent actors must be provided. When all parent actors have indicated that they are done sending messages,
-the join actor will send the list back to ____ and complete.
+the join actor complete.
+
+## Getting data out of actors
+
+You've defined your actor just the way you like it, but you want it to be able to return its results to your inline
+code...how do you proceed? Well you'll have to go back to your actor definition, because this is a special use case,
+but don't fret, it's not too bad. First, in your actor definition, redefine `__init__` for your actor such that it
+accepts a new argument, cb. Then tell it to run its parent init (using `super().__init__([args])`), followed by setting
+up its `self.cb = cb`. Basically what you're doing here is giving your actor a callback, which you can later use to "get
+your results out". Now in your actors `on_complete` method, make the last line of code to execute `self.cb.callback(self.results)`.
+When you instantiate your class, make sure you give it a CallbackFuture object (the CallbackFuture class can be imported from
+actors.py), and after you have sent all of your work to the actor (and given it the signal that it is done), tell your code
+to wait for the actor's results with `results = <callback_object_name>.done()`

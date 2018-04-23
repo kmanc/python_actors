@@ -67,41 +67,57 @@ class E(JoinActor):
 
 class TestActors:
     def test_system(self):
+        # Kernel for running actors
         kernel = MicroKernel()
+        #kernel.start() <--- I feel like I should be able to start here
 
+        # Things that will be used for control flow
         flush = FlushMessage()
         done = DoneMessage()
+
+        # Callback object for "getting data out"
         call = CallbackFuture()
 
+        # Test general use actors, and countdown actors by having a general use actor send messages to countdown actors
+        # Also starts the kernel now that we have some messages to process
         a = A()
         b = B(count=6)
         c = B(count=6)
+
+        kernel.submit("A", a)
+        kernel.submit("B", b)
+        kernel.submit("C", c)
+        a.post("I am asking A to print this message")
+        kernel.start()
+
+        # Test splitting and joining actors by having a split actor send messages to generic actors, and a join actor
+        # accept messages from those generic actors
         d = C()
         e = C()
         f = SplitActor(["D", "E"])
         g = JoinActor(["D", "E"])
+
+        kernel.submit("D", d)
+        kernel.submit("E", e)
+        kernel.submit("F", f)
+        kernel.submit('G', g)
+        messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
+        f.post(messages)
+        f.post(done)
+
+        # Test batch splitting actor and callbacks by having the batch splitter create batches for two generic actors,
+        # which send their messages to a join actor. This join actor accepts a callback, and returns its results to the
+        # inline code
         h = D()
         i = D()
         j = BatchSplitActor(["H", "I"], batch_size=4)
         k = E(["H", "I"], call)
 
-        kernel.submit("A", a)
-        kernel.submit("B", b)
-        kernel.submit("C", c)
-        kernel.submit("D", d)
-        kernel.submit("E", e)
-        kernel.submit("F", f)
-        kernel.submit('G', g)
         kernel.submit('H', h)
         kernel.submit('I', i)
         kernel.submit('J', j)
         kernel.submit('K', k)
 
-        kernel.start()
-        a.post("I am asking A to print this message")
-        messages = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i']
-        f.post(messages)
-        f.post(done)
         batch = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19]
         j.post(batch)
         j.post(flush)
@@ -109,4 +125,6 @@ class TestActors:
         j.post(done)
         results = call.done()
         actor_logger.info(f'The joiner is done: {results}')
+
+        # Shut down the kernel
         kernel.shutdown(True)

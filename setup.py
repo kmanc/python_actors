@@ -12,19 +12,15 @@ setup(
     version="0.0.1",
     author="Kevin Conley",
     author_email="kmanc@comcast.net",
-    description="Simple Python actor implementation",
+    description="Actor implementation in Python",
     keywords="Python, Actor, Concurrency, Parallelism",
     url="https://github.com/kmanc/python_actors",
     packages=['actors'],
     long_description=read('README.md'),
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: Release",
         "Topic :: Utilities"
     ],
-    #   Development Status:
-    #   3 - Alpha
-    #   4 - Beta
-    #   5 - Production/Stable
 
     setup_requires=[
         'pytest-runner',

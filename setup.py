@@ -13,10 +13,12 @@ setup(
     author="Kevin Conley",
     author_email="kmanc@comcast.net",
     description="Actor implementation in Python",
+    license='MIT',
     keywords="Python, Actor, Concurrency, Parallelism",
     url="https://github.com/kmanc/python_actors",
     packages=['actors'],
     long_description=read('README.md'),
+    python_requires='>=3.6',
     classifiers=[
         "Development Status :: Release",
         "Topic :: Utilities"

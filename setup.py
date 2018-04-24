@@ -18,6 +18,7 @@ setup(
     url="https://github.com/kmanc/python_actors",
     packages=['actors'],
     long_description=read('README.md'),
+    python_requires='>=3.6',
     classifiers=[
         "Development Status :: Release",
         "Topic :: Utilities"

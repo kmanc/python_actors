@@ -8,29 +8,22 @@ def read(filename):
 
 
 setup(
-    name="actors",
+    name="pythonactors",
     version="0.0.1",
     author="Kevin Conley",
     author_email="kmanc@comcast.net",
-    description="Actors for python concurrency",
+    description="Actor implementation in Python",
     keywords="Python, Actor, Concurrency, Parallelism",
     url="https://github.com/kmanc/python_actors",
     packages=['actors'],
-    # scripts=[
-    #     'bin/start.py'
-    # ],
     long_description=read('README.md'),
     classifiers=[
-        "Development Status :: 4 - Beta",
+        "Development Status :: Release",
         "Topic :: Utilities"
     ],
-    #   Development Status:
-    #   3 - Alpha
-    #   4 - Beta
-    #   5 - Production/Stable
 
     setup_requires=[
         'pytest-runner',
     ],
-    tests_require=['pytest', 'pytest-env', 'mock']
+    tests_require=['pytest']
 )

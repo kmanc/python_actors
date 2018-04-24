@@ -1,5 +1,6 @@
 import concurrent.futures
 from actors.actor import Actor
+from log_config import actor_logger
 
 
 class MicroKernel(object):
@@ -31,7 +32,7 @@ class MicroKernel(object):
 
     @staticmethod
     def monitor(kernel):
-        while kernel.is_running and bool(kernel.actor_future):
+        while kernel.is_running or bool(kernel.actor_future):
             for actor_name in list(kernel.actor_future):
                 try:
                     is_complete = kernel.actor_future[actor_name].result(timeout=5)
@@ -41,14 +42,15 @@ class MicroKernel(object):
                     if is_complete is True:
                         actor.on_complete()
                 except concurrent.futures.TimeoutError:
-                    print(f'Actor(s) {", ".join(list(kernel.actor_future))} has/have not completed yet')
-        kernel.is_running = False
+                    actor_logger.debug(f'Actor(s) {", ".join(list(kernel.actor_future))} has/have not completed yet')
         return True
 
-    def shutdown(self, wait=False):
+    def shutdown(self, immediate=True):
         self.can_submit = False
-        self.pool.shutdown(wait=wait)
         self.is_running = False
-        for entry in self.actor_lookup.values():
-            entry.shutdown()
+        if immediate:
+            actor_logger.debug(f'Shutting down {list(self.actor_lookup)} preemptively')
+            for entry in self.actor_lookup.values():
+                entry.shutdown()
+        self.pool.shutdown()
         return

@@ -15,7 +15,7 @@ class JoinActor(Actor):
             if self.num_done >= len(self.key_list):
                 self.is_complete = True
         else:
-            self.results.append(message)
-
-    def on_complete(self):
-        print(self.results)
+            try:
+                self.results.extend(message)
+            except TypeError:
+                self.results.append(message)

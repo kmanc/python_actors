@@ -1,5 +1,7 @@
 import abc
 import queue
+from threading import Lock
+from log_config import actor_logger
 
 
 class Actor(abc.ABC):
@@ -22,10 +24,10 @@ class Actor(abc.ABC):
         self.actor_lookup = lookup
 
     def on_complete(self):
-        pass
+        actor_logger.info(f'{self.name} has finished')
 
     def on_shutdown(self):
-        pass
+        actor_logger.info(f'{self.name} was shut down')
 
     @staticmethod
     def call(actor):
@@ -45,17 +47,38 @@ class Actor(abc.ABC):
             assert self.is_running is True and self.is_complete is False
             return self.message_queue.put_nowait(message)
         except queue.Full:
-            print('The queue is full')
-            exit(0)
+            actor_logger.error(f'The queue for {self.name} is full, shutting down')
+            self.shutdown()
         except AssertionError:
-            print('Stop sending me shit, I\'m done')
-            exit(0)
+            actor_logger.error(f'A message was sent to {self.name} after it stopped running or was marked as complete')
+            self.shutdown()
 
     def do_lookup(self, name):
         return self.actor_lookup[name]
 
     def shutdown(self):
         self.is_running = False
+
+
+class CallbackFuture:
+
+    def __init__(self):
+        self.results = None
+        self.mu = Lock()
+        self.mu.acquire()
+
+    def callback(self, data):
+        try:
+            self.results = data
+        finally:
+            self.mu.release()
+
+    def done(self):
+        try:
+            self.mu.acquire()
+            return self.results
+        finally:
+            self.mu.release()
 
 
 class DoneMessage:

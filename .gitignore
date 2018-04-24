@@ -1,6 +1,9 @@
 .idea/
 __pycache__/
-.DS_Store
 .eggs/
 .pytest_cache/
 actors.egg-info/
+pythonactors.egg-info/
+
+*.log
+.DS_Store

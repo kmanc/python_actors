@@ -63,13 +63,14 @@ class E(JoinActor):
 
     def on_complete(self):
         self.cb.callback(self.results)
+        actor_logger.info(f'{self.name} has finished')
 
 
 class TestActors:
     def test_system(self):
         # Kernel for running actors
         kernel = MicroKernel()
-        #kernel.start() <--- I feel like I should be able to start here
+        kernel.start()
 
         # Things that will be used for control flow
         flush = FlushMessage()
@@ -88,7 +89,6 @@ class TestActors:
         kernel.submit("B", b)
         kernel.submit("C", c)
         a.post("I am asking A to print this message")
-        kernel.start()
 
         # Test splitting and joining actors by having a split actor send messages to generic actors, and a join actor
         # accept messages from those generic actors
@@ -127,4 +127,22 @@ class TestActors:
         actor_logger.info(f'The joiner is done: {results}')
 
         # Shut down the kernel
-        kernel.shutdown(True)
+        kernel.shutdown(immediate=False)
+
+        # Make sure things ran correctly
+        try:
+            assert len(results) == 20
+            assert a.is_complete is True
+            assert b.is_complete is True
+            assert c.is_complete is True
+            assert d.is_complete is True
+            assert e.is_complete is True
+            assert f.is_complete is True
+            assert g.is_complete is True
+            assert h.is_complete is True
+            assert i.is_complete is True
+            assert j.is_complete is True
+            assert k.is_complete is True
+        except AssertionError:
+            actor_logger.error(f'One of the test cases failed')
+            exit(0)

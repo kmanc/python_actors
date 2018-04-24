@@ -20,7 +20,7 @@ setup(
     long_description=read('README.md'),
     python_requires='>=3.6',
     classifiers=[
-        "Development Status :: Release",
+        "Development Status :: 5 - Production/Stable",
         "Topic :: Utilities"
     ],
 

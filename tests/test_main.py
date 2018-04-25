@@ -1,8 +1,8 @@
 import time
-from pythonactors.actors import *
-from pythonactors.control import *
-from pythonactors.micro_kernel import MicroKernel
-from pythonactors.log_config import actor_logger
+from python_actors.actors import *
+from python_actors.control import *
+from python_actors.micro_kernel import MicroKernel
+from python_actors.log_config import actor_logger
 
 
 class A(Actor):
@@ -65,7 +65,7 @@ class E(JoinActor):
 
 class TestActors:
     def test_system(self):
-        # Kernel for running pythonactors
+        # Kernel for running python_actors
         kernel = MicroKernel()
         kernel.start()
 
@@ -76,7 +76,7 @@ class TestActors:
         # Callback object for "getting data out"
         call = CallbackFuture()
 
-        # Test general use pythonactors, and countdown pythonactors by having a general use actor send messages to countdown pythonactors
+        # Test general use python_actors, and countdown python_actors by having a general use actor send messages to countdown python_actors
         # Also starts the kernel now that we have some messages to process
         a = A()
         b = B(count=6)
@@ -87,8 +87,8 @@ class TestActors:
         kernel.submit("C", c)
         a.post("I am asking A to print this message")
 
-        # Test splitting and joining pythonactors by having a split actor send messages to generic pythonactors, and a join actor
-        # accept messages from those generic pythonactors
+        # Test splitting and joining python_actors by having a split actor send messages to generic python_actors, and a join actor
+        # accept messages from those generic python_actors
         d = C()
         e = C()
         f = SplitActor(["D", "E"])
@@ -102,7 +102,7 @@ class TestActors:
         f.post(messages)
         f.post(done)
 
-        # Test batch splitting actor and callbacks by having the batch splitter create batches for two generic pythonactors,
+        # Test batch splitting actor and callbacks by having the batch splitter create batches for two generic python_actors,
         # which send their messages to a join actor. This join actor accepts a callback, and returns its results to the
         # inline code
         h = D()

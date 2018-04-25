@@ -1,7 +1,7 @@
 import abc
 import queue
-from python_actors.control import DoneMessage, FlushMessage
-from python_actors.log_config import actor_logger
+from py_actors.control import DoneMessage, FlushMessage
+from py_actors.log_config import actor_logger
 
 
 class Actor(abc.ABC):

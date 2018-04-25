@@ -1,11 +1,8 @@
 import time
-from actors.actor import Actor, CallbackFuture, DoneMessage, FlushMessage
-from actors.micro_kernel import MicroKernel
-from actors.prebuilt.batch_split_actor import BatchSplitActor
-from actors.prebuilt.countdown_actor import CountdownActor
-from actors.prebuilt.join_actor import JoinActor
-from actors.prebuilt.split_actor import SplitActor
-from actors.log_config import actor_logger
+from python_actors.actors import *
+from python_actors.control import *
+from python_actors.micro_kernel import MicroKernel
+from python_actors.log_config import actor_logger
 
 
 class A(Actor):
@@ -68,7 +65,7 @@ class E(JoinActor):
 
 class TestActors:
     def test_system(self):
-        # Kernel for running actors
+        # Kernel for running python_actors
         kernel = MicroKernel()
         kernel.start()
 
@@ -79,7 +76,7 @@ class TestActors:
         # Callback object for "getting data out"
         call = CallbackFuture()
 
-        # Test general use actors, and countdown actors by having a general use actor send messages to countdown actors
+        # Test general use python_actors, and countdown python_actors by having a general use actor send messages to countdown python_actors
         # Also starts the kernel now that we have some messages to process
         a = A()
         b = B(count=6)
@@ -90,8 +87,8 @@ class TestActors:
         kernel.submit("C", c)
         a.post("I am asking A to print this message")
 
-        # Test splitting and joining actors by having a split actor send messages to generic actors, and a join actor
-        # accept messages from those generic actors
+        # Test splitting and joining python_actors by having a split actor send messages to generic python_actors, and a join actor
+        # accept messages from those generic python_actors
         d = C()
         e = C()
         f = SplitActor(["D", "E"])
@@ -105,7 +102,7 @@ class TestActors:
         f.post(messages)
         f.post(done)
 
-        # Test batch splitting actor and callbacks by having the batch splitter create batches for two generic actors,
+        # Test batch splitting actor and callbacks by having the batch splitter create batches for two generic python_actors,
         # which send their messages to a join actor. This join actor accepts a callback, and returns its results to the
         # inline code
         h = D()

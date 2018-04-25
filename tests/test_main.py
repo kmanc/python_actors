@@ -5,7 +5,7 @@ from actors.prebuilt.batch_split_actor import BatchSplitActor
 from actors.prebuilt.countdown_actor import CountdownActor
 from actors.prebuilt.join_actor import JoinActor
 from actors.prebuilt.split_actor import SplitActor
-from log_config import actor_logger
+from actors.log_config import actor_logger
 
 
 class A(Actor):

@@ -1,5 +1,5 @@
 from actors.actor import Actor, DoneMessage
-from log_config import actor_logger
+from actors.log_config import actor_logger
 
 
 class SplitActor(Actor):

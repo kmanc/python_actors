@@ -1,7 +1,7 @@
 import abc
 import queue
 from threading import Lock
-from log_config import actor_logger
+from actors.log_config import actor_logger
 
 
 class Actor(abc.ABC):

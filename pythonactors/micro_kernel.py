@@ -1,6 +1,6 @@
 import concurrent.futures
-from actors.actor import Actor
-from actors.log_config import actor_logger
+from pythonactors.actors import Actor
+from pythonactors.log_config import actor_logger
 
 
 class MicroKernel(object):

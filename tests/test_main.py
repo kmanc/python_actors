@@ -53,7 +53,7 @@ class D(Actor):
             g.post(message)
 
 
-class E(JoinActor):
+class E(BatchJoinActor):
     def __init__(self, key_list, cb):
         super().__init__(key_list)
         self.cb = cb

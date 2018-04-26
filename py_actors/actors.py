@@ -60,6 +60,23 @@ class Actor(abc.ABC):
         self.is_running = False
 
 
+class BatchJoinActor(Actor):
+
+    def __init__(self, key_list):
+        super().__init__()
+        self.key_list = key_list
+        self.num_done = 0
+        self.results = []
+
+    def on_receive(self, message):
+        if type(message) == DoneMessage:
+            self.num_done += 1
+            if self.num_done >= len(self.key_list):
+                self.is_complete = True
+        else:
+            self.results.extend(message)
+
+
 class BatchSplitActor(Actor):
 
     def __init__(self, key_list, batch_size=256):
@@ -133,10 +150,7 @@ class JoinActor(Actor):
             if self.num_done >= len(self.key_list):
                 self.is_complete = True
         else:
-            try:
-                self.results.extend(message)
-            except TypeError:
-                self.results.append(message)
+            self.results.append(message)
 
 
 class SplitActor(Actor):

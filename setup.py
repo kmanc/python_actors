@@ -9,7 +9,7 @@ def read(filename):
 
 setup(
     name="py_actors",
-    version="0.0.2",
+    version="0.0.4",
     author="Kevin Conley",
     author_email="kmanc@comcast.net",
     description="Actor implementation in Python",

@@ -1,5 +1,6 @@
 import abc
 import queue
+import time
 from py_actors.control import DoneMessage, FlushMessage
 from py_actors.log_config import actor_logger
 
@@ -38,7 +39,7 @@ class Actor(abc.ABC):
                 message = actor.message_queue.get_nowait()
                 actor.on_receive(message)
             except queue.Empty:
-                pass
+                time.sleep(.25)
         actor.on_shutdown()
         return actor.is_complete
 

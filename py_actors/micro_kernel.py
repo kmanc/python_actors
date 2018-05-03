@@ -6,12 +6,12 @@ from py_actors.log_config import actor_logger
 class MicroKernel(object):
 
     def __init__(self):
+        self.monitor_future = None
         self.is_running = True
         self.can_submit = True
         self.actor_lookup = dict()
         self.actor_future = dict()
         self.pool = concurrent.futures.ThreadPoolExecutor()
-        self.monitor_future = concurrent.futures.Future()
 
     def submit(self, name, actor_instance):
         if self.can_submit:

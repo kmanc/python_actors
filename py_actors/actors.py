@@ -17,9 +17,6 @@ class Actor(abc.ABC):
     def on_receive(cls, message):
         pass
 
-    def get_name(self):
-        return self.name
-
     def on_init(self, lookup):
         self.actor_lookup = lookup
 
@@ -83,7 +80,7 @@ class BatchSplitActor(Actor):
         super().__init__()
         self.key_list = key_list
         self.batch_size = batch_size
-        self.batch_dict = dict(zip(key_list, [[] for i in range(len(key_list))]))
+        self.batch_dict = dict(zip(key_list, ([] for i in range(len(key_list)))))
 
     def on_receive(self, message):
         if type(message) == DoneMessage:

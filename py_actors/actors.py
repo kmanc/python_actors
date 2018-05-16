@@ -5,6 +5,7 @@ from py_actors.log_config import actor_logger
 
 
 class Actor(abc.ABC):
+    """Generic actor that receives a message and performs the developer-defined on_receive"""
 
     def __init__(self):
         self.actor_lookup = None
@@ -15,19 +16,24 @@ class Actor(abc.ABC):
 
     @classmethod
     def on_receive(cls, message):
+        """Class method that defines what the actor should do with the message it received"""
         pass
 
     def on_init(self, lookup):
+        """Method used by the kernel to set up an actor"""
         self.actor_lookup = lookup
 
     def on_complete(self):
+        """Method that defines what an actor should do upon successful completion"""
         actor_logger.info(f'{self.name} has finished')
 
     def on_shutdown(self):
+        """Method that defines what an actor should do when shut down"""
         actor_logger.info(f'{self.name} was shut down')
 
     @staticmethod
     def call(actor):
+        """Method used by the kernel to define an actor's workflow"""
         while actor.is_running:
             if actor.is_complete:
                 break
@@ -40,6 +46,7 @@ class Actor(abc.ABC):
         return actor.is_complete
 
     def post(self, message):
+        """Method to send a message to an actor's queue"""
         try:
             assert self.is_running is True and self.is_complete is False
             return self.message_queue.put_nowait(message)
@@ -51,13 +58,16 @@ class Actor(abc.ABC):
             self.shutdown()
 
     def do_lookup(self, name):
+        """Method to return an actor's name"""
         return self.actor_lookup[name]
 
     def shutdown(self):
+        """Method to turn an actor off"""
         self.is_running = False
 
 
 class BatchJoinActor(Actor):
+    """Special-case actor that receives messages from batch actors and adds them to a list"""
 
     def __init__(self, key_list):
         super().__init__()
@@ -66,6 +76,7 @@ class BatchJoinActor(Actor):
         self.results = []
 
     def on_receive(self, message):
+        """Method that receives messages and adds them to a results list using Python's extend"""
         if type(message) == DoneMessage:
             self.num_done += 1
             if self.num_done >= len(self.key_list):
@@ -75,6 +86,7 @@ class BatchJoinActor(Actor):
 
 
 class BatchSplitActor(Actor):
+    """Special-case actor that splits messages into batches that will be processed by worker actors"""
 
     def __init__(self, key_list, batch_size=256):
         super().__init__()
@@ -83,6 +95,8 @@ class BatchSplitActor(Actor):
         self.batch_dict = dict(zip(key_list, ([] for i in range(len(key_list)))))
 
     def on_receive(self, message):
+        """Method that splits messages into batches for workers until a batch size is reached, at which point the
+        batch will be sent to the worker"""
         if type(message) == DoneMessage:
             for key in self.key_list:
                 instance = self.do_lookup(key)
@@ -117,12 +131,14 @@ class BatchSplitActor(Actor):
 
 
 class CountdownActor(Actor):
+    """Special-case actor that will process a pre-determined amount of messages before shutting down"""
 
     def __init__(self, count):
         super().__init__()
         self.count = count
 
     def on_receive(self, message):
+        """Method that does work on a message and then decrements the actor's counter"""
         self.do_work(message)
         self.count -= 1
         if self.count <= 0:
@@ -130,10 +146,12 @@ class CountdownActor(Actor):
 
     @classmethod
     def do_work(cls, message):
+        """Class method that defines what the actor should do with the message it received"""
         pass
 
 
 class JoinActor(Actor):
+    """Special-case actor that receives messages from actors and adds them to a list"""
 
     def __init__(self, key_list):
         super().__init__()
@@ -142,6 +160,7 @@ class JoinActor(Actor):
         self.results = []
 
     def on_receive(self, message):
+        """Method that puts messages in a results list"""
         if type(message) == DoneMessage:
             self.num_done += 1
             if self.num_done >= len(self.key_list):
@@ -151,12 +170,14 @@ class JoinActor(Actor):
 
 
 class SplitActor(Actor):
+    """Special-case actor that splits messages to be be processed by worker actors"""
 
     def __init__(self, key_list):
         super().__init__()
         self.key_list = key_list
 
     def on_receive(self, message):
+        """Method that splits messages among worker actors"""
         if type(message) == DoneMessage:
             for needs_shutdown in self.key_list:
                 shut_me_down = self.do_lookup(needs_shutdown)

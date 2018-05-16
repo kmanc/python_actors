@@ -4,16 +4,18 @@ from py_actors.log_config import actor_logger
 
 
 class MicroKernel(object):
+    """A basic kernel to run actors in"""
 
     def __init__(self):
+        self.monitor_future = None
         self.is_running = True
         self.can_submit = True
         self.actor_lookup = dict()
         self.actor_future = dict()
         self.pool = concurrent.futures.ThreadPoolExecutor()
-        self.monitor_future = concurrent.futures.Future()
 
     def submit(self, name, actor_instance):
+        """Put an actor instance into the kernel"""
         if self.can_submit:
             actor_instance.name = name
             self.actor_lookup[name] = actor_instance
@@ -24,14 +26,17 @@ class MicroKernel(object):
             return False
 
     def post(self, name, message):
+        """Send a message to an actor"""
         actor = self.actor_lookup[name]
         actor.post(message)
 
     def start(self):
+        """Start the kernel"""
         self.monitor_future = self.pool.submit(self.monitor, self)
 
     @staticmethod
     def monitor(kernel):
+        """Process message queues for actors in the kernel"""
         while kernel.is_running or bool(kernel.actor_future):
             for actor_name in list(kernel.actor_future):
                 try:
@@ -46,6 +51,7 @@ class MicroKernel(object):
         return True
 
     def shutdown(self, immediate=True):
+        """Shut the kernel down"""
         self.can_submit = False
         self.is_running = False
         if immediate:

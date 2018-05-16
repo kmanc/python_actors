@@ -1,0 +1,223 @@
+Code Examples
+=============
+
+This is a simple example::
+
+    from py_actors.actors import *
+    from py_actors.micro_kernel import MicroKernel
+
+
+    class SampleActor(Actor):
+        def on_receive(self, message):
+            # Complicated work here
+            new_message = message * 4
+            print(new_message)
+
+    kernel = MicroKernel()
+    worker_actor = SampleActor()
+    kernel.submit('worker_actor_name', worker_actor)
+    worker_actor.post(4)
+    worker_actor.post(10)
+    worker_actor.is_complete = True
+    kernel.shutdown(immediate=False)
+
+This might not be the most interesting Actor you've seen on screen, but it gets the job done:
+
+* You set up an actor by defining its on_receive
+* You created kernel and actor instances
+* You submitted the actor to the kernel
+* You posted two messages to the actor
+* You told the actor that it was done manually (this isn't ideal, we'll cover that later with control messages)
+* You told the kernel to shut itself down with immediate=False so that any job not-yet-completed has a chance to finish before shutting down the kernel
+* If you ran this code, you'd get two prints, 16 and 40
+
+This is an example of a countdown actor::
+
+    from py_actors.actors import *
+    from py_actors.micro_kernel import MicroKernel
+
+
+    class SampleCountDown(CountdownActor):
+        def on_receive(self, message):
+            # Complicated work here
+            new_message = message * 4
+            print(new_message)
+
+    kernel = MicroKernel()
+    countdown_actor = SampleCountDown(count=5)
+    kernel.submit('countdown_actor_name', countdown_actor)
+    worker_actor.post(1)
+    worker_actor.post(2)
+    worker_actor.post(3)
+    worker_actor.post(4)
+    worker_actor.post(5)
+    kernel.shutdown(immediate=False)
+
+This time you did the following:
+
+* You set up an actor by defining its on_receive
+* You created kernel and actor instances, defining how many messages you want your actor to process before shutting down
+* You submitted the actor to the kernel
+* You posted five messages to the actor
+* You told the kernel to shut itself down with immediate=False so that all messages are guaranteed to complete before the kernel shuts down
+* Notice this time you didn't have to tell the actor it was done; it knew to mark itself as complete after processing five messages
+* If you ran this code, you'd get five prints: 4, 8, 12, 16, and 20
+
+This is an example of a split actor being used to split work among worker actors::
+
+    from py_actors.actors import *
+    from py_actors.control import *
+    from py_actors.micro_kernel import MicroKernel
+
+
+    class SampleActor(Actor):
+        def on_receive(self, message):
+            if type(message) == DoneMessage:
+                self.is_complete = True
+            else:
+                # Complicated work here
+                new_message = message * 4
+                print(new_message)
+
+    kernel = MicroKernel()
+    worker_actor_1 = SampleActor()
+    worker_actor_2 = SampleActor()
+    split_actor = SplitActor(['worker_actor_1', 'worker_actor_2'])
+    kernel.submit('worker_actor_1', worker_actor_1)
+    kernel.submit('worker_actor_2', worker_actor_2)
+    kernel.submit('split_actor_name', split_actor)
+    split_actor.post(1)
+    split_actor.post(2)
+    split_actor.post(3)
+    split_actor.post(4)
+    split_actor.post(DoneMessage())
+    kernel.shutdown(immediate=False)
+
+Now things are getting interesting! Let's see what happened:
+
+* You set up a worker actor by defining its on_receive
+* You created kernel, two actor instances, and a split actor instance, giving it the names of the worker actors so it knows who to delegate to
+* You submitted the actors to the kernel
+* You posted five messages to the split actor; four regular messages, and a new type of control message called a DoneMessage
+  This special DoneMessage tells the split actor to gracefully shut down by telling it to shut down all of its worker actors before shutting down itself
+* You told the kernel to shut itself down with immediate=False like normal
+* In this case, you will get the prints 4, 8, 12, and 16, but their order is not guaranteed...let's explore why
+
+.. note:: The split actor sends messages to actors for processing in a round robin fashion. Those actors operate on seperate threads, so if one actor acts quickly and another slowly, the fast actor might process multiple messages before the slow actor finishes its first
+
+
+Let's extend that last example so that the worker actors funnel their results to a join actor::
+
+    from py_actors.actors import *
+    from py_actors.control import *
+    from py_actors.micro_kernel import MicroKernel
+
+
+    class SampleActor(Actor):
+        def on_receive(self, message):
+            if type(message) == DoneMessage:
+                joiner = self.do_lookup('join_actor_name')
+                joiner.post(DoneMessage())
+                self.is_complete = True
+            else:
+                # Complicated work here
+                new_message = message * 4
+                joiner = self.do_lookup('join_actor_name')
+                joiner.post(new_message)
+
+    class JoinActor(JoinActor):
+        def on_complete(self):
+            print(self.results)
+
+    kernel = MicroKernel()
+    worker_actor_1 = SampleActor()
+    worker_actor_2 = SampleActor()
+    split_actor = SplitActor(['worker_actor_1', 'worker_actor_2'])
+    join_actor = JoinActor(['worker_actor_1', 'worker_actor_2'])
+    kernel.submit('worker_actor_1', worker_actor_1)
+    kernel.submit('worker_actor_2', worker_actor_2)
+    kernel.submit('split_actor_name', split_actor)
+    kernel.submit('join_actor_name', join_actor)
+    split_actor.post(1)
+    split_actor.post(2)
+    split_actor.post(3)
+    split_actor.post(4)
+    split_actor.post(DoneMessage())
+    kernel.shutdown(immediate=False)
+
+Our example has grown so that you've done the following:
+
+* You set up a worker actor by defining its on_receive
+* You set up a standard JoinActor, but then over-rode its on_complete method so that you could see the output when it's done
+* You created kernel, two worker actor instances, a splitter actor instance, and a joiner actor instance (the two later actors with the names of the actors they should send and receive messages from, respectively)
+* You submitted the actors to the kernel
+* You posted five messages to the split actor, four regular messages, and the DoneMessage
+* You told the kernel to shut itself down with immediate=False like normal
+* Running this should produce a list of the numbers 4, 8, 12, and 16 in some order
+
+.. note:: Similar to our last example, telling the split actor it is done with the DoneMessage also alerts it to shut down all children actors (in this case both workers). And when the children actors complete, they also alert the joiner to shut down. The joiner will not shut down until ALL parent actors have told it to
+
+Our final exmaple builds on the last two, and uses a callback so that the join actor's results can be accessed within the code::
+
+    from py_actors.actors import *
+    from py_actors.control import *
+    from py_actors.micro_kernel import MicroKernel
+
+
+    class SampleActor(Actor):
+        def on_receive(self, message):
+            if type(message) == DoneMessage:
+                joiner = self.do_lookup('join_actor_name')
+                joiner.post(DoneMessage())
+                self.is_complete = True
+            else:
+                # Complicated work here
+                new_message = message * 4
+                joiner = self.do_lookup('join_actor_name')
+                joiner.post(new_message)
+
+    class JoinActorCallback(JoinActor):
+        def __init__(self, key_list, cb):
+            super().__init__(key_list)
+            self.cb = cb
+
+        def on_complete(self):
+            self.cb.callback(self.results)
+
+    kernel = MicroKernel()
+    worker_actor_1 = SampleActor()
+    worker_actor_2 = SampleActor()
+    split_actor = SplitActor(['worker_actor_1', 'worker_actor_2'])
+    call = CallbackFuture()
+    join_actor_callback = JoinActorCallback(['worker_actor_1', 'worker_actor_2'], call)
+    kernel.submit('worker_actor_1', worker_actor_1)
+    kernel.submit('worker_actor_2', worker_actor_2)
+    kernel.submit('split_actor_name', split_actor)
+    kernel.submit('join_actor_callback_name', join_actor_callback)
+    split_actor.post(1)
+    split_actor.post(2)
+    split_actor.post(3)
+    split_actor.post(4)
+    split_actor.post(DoneMessage())
+    answers = call.done()
+    kernel.shutdown(immediate=False)
+    print(answers)
+
+Well that escalated quickly. Let's see what you did:
+
+* You set up a worker actor by defining its on_receive
+* You set up a standard JoinActor, but then over-rode its __init__ and on_complete methods. Its __init__ now gives it a callback, and its on_complete calls a method of that callback. This is how we "get the results out" of the actor
+* You created kernel and actor instances, once again with the names of actors you expect to send/receive messages from, but this time you also gave the join_actor an instance of the CallbackFuture() class in control
+* You submitted the actors to the kernel
+* You posted five messages to the actor
+* You set the variable "answers" to the return value of "call.done()". This is abstracted away so that you don't have to worry about it, but it basically allows you to access the results of the actor outside of the actor itself
+* You told the kernel to shut itself down with immediate=False like normal
+* You printed the variable "answers" which, like before, is a list containing 4, 8, 12, and 16 in some order
+
+.. note:: Callbacks like this are really useful when you are trying run expensive functions across many actors for performance reasons in in-line code. If your actor's "work" is to send data to a database, or some other resource outside of the in-line code, they are not very useful
+
+At this point it is work calling out that BatchJoin and BatchSplit Actors exist for cases where communication between Actors
+is expensive; the batching of data before spreading and working on messages helps improve performance, but the code that
+you as the developer needs to write in order to use those actors is pretty much the same as regular Join and Split Actors
+
+Hopefully this was a decent introduction to using Actors, but please drop a line if you'd like to give me feedback!

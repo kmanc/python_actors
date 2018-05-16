@@ -1,0 +1,212 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Actor Reference &#8212; py_actors 0.0.5 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Control Reference" href="control.html" />
+    <link rel="prev" title="Welcome to py_actors’s documentation!" href="index.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="actor-reference">
+<h1>Actor Reference<a class="headerlink" href="#actor-reference" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="py_actors.actors.Actor">
+<em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">Actor</code><a class="headerlink" href="#py_actors.actors.Actor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Generic actor that receives a message and performs the developer-defined on_receive</p>
+<dl class="staticmethod">
+<dt id="py_actors.actors.Actor.call">
+<em class="property">static </em><code class="descname">call</code><span class="sig-paren">(</span><em>actor</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.call" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used by the kernel to define an actor’s workflow</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_actors.actors.Actor.do_lookup">
+<code class="descname">do_lookup</code><span class="sig-paren">(</span><em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.do_lookup" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to return an actor’s name</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_actors.actors.Actor.on_complete">
+<code class="descname">on_complete</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.on_complete" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that defines what an actor should do upon successful completion</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_actors.actors.Actor.on_init">
+<code class="descname">on_init</code><span class="sig-paren">(</span><em>lookup</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.on_init" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method used by the kernel to set up an actor</p>
+</dd></dl>
+
+<dl class="classmethod">
+<dt id="py_actors.actors.Actor.on_receive">
+<em class="property">classmethod </em><code class="descname">on_receive</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.on_receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class method that defines what the actor should do with the message it received</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_actors.actors.Actor.on_shutdown">
+<code class="descname">on_shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.on_shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that defines what an actor should do when shut down</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_actors.actors.Actor.post">
+<code class="descname">post</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.post" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to send a message to an actor’s queue</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_actors.actors.Actor.shutdown">
+<code class="descname">shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.shutdown" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method to turn an actor off</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py_actors.actors.BatchJoinActor">
+<em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">BatchJoinActor</code><span class="sig-paren">(</span><em>key_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.BatchJoinActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special-case actor that receives messages from batch actors and adds them to a list</p>
+<dl class="method">
+<dt id="py_actors.actors.BatchJoinActor.on_receive">
+<code class="descname">on_receive</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.BatchJoinActor.on_receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that receives messages and adds them to a results list using Python’s extend</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py_actors.actors.BatchSplitActor">
+<em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">BatchSplitActor</code><span class="sig-paren">(</span><em>key_list</em>, <em>batch_size=256</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.BatchSplitActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special-case actor that splits messages into batches that will be processed by worker actors</p>
+<dl class="method">
+<dt id="py_actors.actors.BatchSplitActor.on_receive">
+<code class="descname">on_receive</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.BatchSplitActor.on_receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that splits messages into batches for workers until a batch size is reached, at which point the
+batch will be sent to the worker</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py_actors.actors.CountdownActor">
+<em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">CountdownActor</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.CountdownActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special-case actor that will process a pre-determined amount of messages before shutting down</p>
+<dl class="classmethod">
+<dt id="py_actors.actors.CountdownActor.do_work">
+<em class="property">classmethod </em><code class="descname">do_work</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.CountdownActor.do_work" title="Permalink to this definition">¶</a></dt>
+<dd><p>Class method that defines what the actor should do with the message it received</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="py_actors.actors.CountdownActor.on_receive">
+<code class="descname">on_receive</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.CountdownActor.on_receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that does work on a message and then decrements the actor’s counter</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py_actors.actors.JoinActor">
+<em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">JoinActor</code><span class="sig-paren">(</span><em>key_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.JoinActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special-case actor that receives messages from actors and adds them to a list</p>
+<dl class="method">
+<dt id="py_actors.actors.JoinActor.on_receive">
+<code class="descname">on_receive</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.JoinActor.on_receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that puts messages in a results list</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="class">
+<dt id="py_actors.actors.SplitActor">
+<em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">SplitActor</code><span class="sig-paren">(</span><em>key_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.SplitActor" title="Permalink to this definition">¶</a></dt>
+<dd><p>Special-case actor that splits messages to be be processed by worker actors</p>
+<dl class="method">
+<dt id="py_actors.actors.SplitActor.on_receive">
+<code class="descname">on_receive</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.SplitActor.on_receive" title="Permalink to this definition">¶</a></dt>
+<dd><p>Method that splits messages among worker actors</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="index.html" title="previous chapter">Welcome to py_actors’s documentation!</a></li>
+      <li>Next: <a href="control.html" title="next chapter">Control Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/actors.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Kevin Conley.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/actors.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>

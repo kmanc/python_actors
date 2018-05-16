@@ -5,6 +5,12 @@ __pycache__/
 py_actors.egg-info/
 build/
 dist/
+_build/
 
 *.log
 .DS_Store
+*.rst
+*.pyc
+conf.py
+Makefile
+

@@ -1,6 +1,9 @@
+*************
 Code Examples
-=============
+*************
 
+Basic Actor
+###########
 This is a simple example::
 
     from py_actors.actors import *
@@ -31,6 +34,8 @@ This might not be the most interesting Actor you've seen on screen, but it gets 
 * You told the kernel to shut itself down with immediate=False so that any job not-yet-completed has a chance to finish before shutting down the kernel
 * If you ran this code, you'd get two prints, 16 and 40
 
+Countdown Actor
+###############
 This is an example of a countdown actor::
 
     from py_actors.actors import *
@@ -63,6 +68,8 @@ This time you did the following:
 * Notice this time you didn't have to tell the actor it was done; it knew to mark itself as complete after processing five messages
 * If you ran this code, you'd get five prints: 4, 8, 12, 16, and 20
 
+Split Actor
+###########
 This is an example of a split actor being used to split work among worker actors::
 
     from py_actors.actors import *
@@ -105,7 +112,8 @@ Now things are getting interesting! Let's see what happened:
 
 .. note:: The split actor sends messages to actors for processing in a round robin fashion. Those actors operate on seperate threads, so if one actor acts quickly and another slowly, the fast actor might process multiple messages before the slow actor finishes its first
 
-
+Split and Join Actors
+#####################
 Let's extend that last example so that the worker actors funnel their results to a join actor::
 
     from py_actors.actors import *
@@ -157,7 +165,9 @@ Our example has grown so that you've done the following:
 
 .. note:: Similar to our last example, telling the split actor it is done with the DoneMessage also alerts it to shut down all children actors (in this case both workers). And when the children actors complete, they also alert the joiner to shut down. The joiner will not shut down until ALL parent actors have told it to
 
-Our final exmaple builds on the last two, and uses a callback so that the join actor's results can be accessed within the code::
+Split and Join Actors with a Callback
+#####################################
+Our final example builds on the last two, and uses a callback so that the join actor's results can be accessed within the code::
 
     from py_actors.actors import *
     from py_actors.control import *

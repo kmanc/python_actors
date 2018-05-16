@@ -1,26 +1,51 @@
+***************
 Actor Reference
-===============
+***************
 
+Actor
+#####
+
+_______________________________________________
 
 .. autoclass:: py_actors.actors.Actor
    :members:
 
+Batch Join Actor
+################
+
+_______________________________________________
 
 .. autoclass:: py_actors.actors.BatchJoinActor
    :members:
 
+Batch Split Actor
+#################
+
+_______________________________________________
 
 .. autoclass:: py_actors.actors.BatchSplitActor
    :members:
 
+Countdown Actor
+################
+
+_______________________________________________
 
 .. autoclass:: py_actors.actors.CountdownActor
    :members:
 
+Join Actor
+##########
+
+_______________________________________________
 
 .. autoclass:: py_actors.actors.JoinActor
    :members:
 
+Split Actor
+###########
+
+_______________________________________________
 
 .. autoclass:: py_actors.actors.SplitActor
    :members:

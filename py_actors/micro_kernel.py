@@ -51,7 +51,10 @@ class MicroKernel(object):
         return True
 
     def shutdown(self, immediate=True):
-        """Shut the kernel down"""
+        """Shut the kernel down. When immediate is set to True, all active actors will be terminated, and unprocessed
+        messages will be dropped. If immediate is set to False, actors will finish processing all messages in their
+        queue at the time shutdown was called
+        """
         self.can_submit = False
         self.is_running = False
         if immediate:

@@ -16,7 +16,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Control Reference" href="control.html" />
-    <link rel="prev" title="Welcome to py_actors’s documentation!" href="index.html" />
+    <link rel="prev" title="Documentation for py_actors" href="index.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
   
@@ -33,6 +33,9 @@
             
   <div class="section" id="actor-reference">
 <h1>Actor Reference<a class="headerlink" href="#actor-reference" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="actor">
+<h2>Actor<a class="headerlink" href="#actor" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
 <dl class="class">
 <dt id="py_actors.actors.Actor">
 <em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">Actor</code><a class="headerlink" href="#py_actors.actors.Actor" title="Permalink to this definition">¶</a></dt>
@@ -64,19 +67,20 @@
 <dl class="classmethod">
 <dt id="py_actors.actors.Actor.on_receive">
 <em class="property">classmethod </em><code class="descname">on_receive</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.on_receive" title="Permalink to this definition">¶</a></dt>
-<dd><p>Class method that defines what the actor should do with the message it received</p>
+<dd><p>Class method that defines what the actor should do with the message it received. This is the actor’s
+‘function’</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="py_actors.actors.Actor.on_shutdown">
 <code class="descname">on_shutdown</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.on_shutdown" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method that defines what an actor should do when shut down</p>
+<dd><p>Method that defines what an actor should do when shut down, whether it has completed or not</p>
 </dd></dl>
 
 <dl class="method">
 <dt id="py_actors.actors.Actor.post">
 <code class="descname">post</code><span class="sig-paren">(</span><em>message</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.Actor.post" title="Permalink to this definition">¶</a></dt>
-<dd><p>Method to send a message to an actor’s queue</p>
+<dd><p>Method to put a message in an actor’s (FIFO) queue</p>
 </dd></dl>
 
 <dl class="method">
@@ -87,6 +91,10 @@
 
 </dd></dl>
 
+</div>
+<div class="section" id="batch-join-actor">
+<h2>Batch Join Actor<a class="headerlink" href="#batch-join-actor" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
 <dl class="class">
 <dt id="py_actors.actors.BatchJoinActor">
 <em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">BatchJoinActor</code><span class="sig-paren">(</span><em>key_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.BatchJoinActor" title="Permalink to this definition">¶</a></dt>
@@ -99,6 +107,10 @@
 
 </dd></dl>
 
+</div>
+<div class="section" id="batch-split-actor">
+<h2>Batch Split Actor<a class="headerlink" href="#batch-split-actor" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
 <dl class="class">
 <dt id="py_actors.actors.BatchSplitActor">
 <em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">BatchSplitActor</code><span class="sig-paren">(</span><em>key_list</em>, <em>batch_size=256</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.BatchSplitActor" title="Permalink to this definition">¶</a></dt>
@@ -112,6 +124,10 @@ batch will be sent to the worker</p>
 
 </dd></dl>
 
+</div>
+<div class="section" id="countdown-actor">
+<h2>Countdown Actor<a class="headerlink" href="#countdown-actor" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
 <dl class="class">
 <dt id="py_actors.actors.CountdownActor">
 <em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">CountdownActor</code><span class="sig-paren">(</span><em>count</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.CountdownActor" title="Permalink to this definition">¶</a></dt>
@@ -130,6 +146,10 @@ batch will be sent to the worker</p>
 
 </dd></dl>
 
+</div>
+<div class="section" id="join-actor">
+<h2>Join Actor<a class="headerlink" href="#join-actor" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
 <dl class="class">
 <dt id="py_actors.actors.JoinActor">
 <em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">JoinActor</code><span class="sig-paren">(</span><em>key_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.JoinActor" title="Permalink to this definition">¶</a></dt>
@@ -142,6 +162,10 @@ batch will be sent to the worker</p>
 
 </dd></dl>
 
+</div>
+<div class="section" id="split-actor">
+<h2>Split Actor<a class="headerlink" href="#split-actor" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
 <dl class="class">
 <dt id="py_actors.actors.SplitActor">
 <em class="property">class </em><code class="descclassname">py_actors.actors.</code><code class="descname">SplitActor</code><span class="sig-paren">(</span><em>key_list</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.actors.SplitActor" title="Permalink to this definition">¶</a></dt>
@@ -155,17 +179,31 @@ batch will be sent to the worker</p>
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Actor Reference</a><ul>
+<li><a class="reference internal" href="#actor">Actor</a></li>
+<li><a class="reference internal" href="#batch-join-actor">Batch Join Actor</a></li>
+<li><a class="reference internal" href="#batch-split-actor">Batch Split Actor</a></li>
+<li><a class="reference internal" href="#countdown-actor">Countdown Actor</a></li>
+<li><a class="reference internal" href="#join-actor">Join Actor</a></li>
+<li><a class="reference internal" href="#split-actor">Split Actor</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
-      <li>Previous: <a href="index.html" title="previous chapter">Welcome to py_actors’s documentation!</a></li>
+      <li>Previous: <a href="index.html" title="previous chapter">Documentation for py_actors</a></li>
       <li>Next: <a href="control.html" title="next chapter">Control Reference</a></li>
   </ul></li>
 </ul>

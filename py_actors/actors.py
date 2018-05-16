@@ -16,7 +16,8 @@ class Actor(abc.ABC):
 
     @classmethod
     def on_receive(cls, message):
-        """Class method that defines what the actor should do with the message it received"""
+        """Class method that defines what the actor should do with the message it received. This is the actor's
+        'function'"""
         pass
 
     def on_init(self, lookup):
@@ -28,7 +29,7 @@ class Actor(abc.ABC):
         actor_logger.info(f'{self.name} has finished')
 
     def on_shutdown(self):
-        """Method that defines what an actor should do when shut down"""
+        """Method that defines what an actor should do when shut down, whether it has completed or not"""
         actor_logger.info(f'{self.name} was shut down')
 
     @staticmethod
@@ -46,7 +47,7 @@ class Actor(abc.ABC):
         return actor.is_complete
 
     def post(self, message):
-        """Method to send a message to an actor's queue"""
+        """Method to put a message in an actor's (FIFO) queue"""
         try:
             assert self.is_running is True and self.is_complete is False
             return self.message_queue.put_nowait(message)

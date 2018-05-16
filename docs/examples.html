@@ -32,6 +32,8 @@
             
   <div class="section" id="code-examples">
 <h1>Code Examples<a class="headerlink" href="#code-examples" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="basic-actor">
+<h2>Basic Actor<a class="headerlink" href="#basic-actor" title="Permalink to this headline">¶</a></h2>
 <p>This is a simple example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
@@ -62,6 +64,9 @@
 <li>You told the kernel to shut itself down with immediate=False so that any job not-yet-completed has a chance to finish before shutting down the kernel</li>
 <li>If you ran this code, you’d get two prints, 16 and 40</li>
 </ul>
+</div>
+<div class="section" id="countdown-actor">
+<h2>Countdown Actor<a class="headerlink" href="#countdown-actor" title="Permalink to this headline">¶</a></h2>
 <p>This is an example of a countdown actor:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
@@ -94,6 +99,9 @@
 <li>Notice this time you didn’t have to tell the actor it was done; it knew to mark itself as complete after processing five messages</li>
 <li>If you ran this code, you’d get five prints: 4, 8, 12, 16, and 20</li>
 </ul>
+</div>
+<div class="section" id="split-actor">
+<h2>Split Actor<a class="headerlink" href="#split-actor" title="Permalink to this headline">¶</a></h2>
 <p>This is an example of a split actor being used to split work among worker actors:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">py_actors.control</span> <span class="k">import</span> <span class="o">*</span>
@@ -138,6 +146,9 @@ This special DoneMessage tells the split actor to gracefully shut down by tellin
 <p class="first admonition-title">Note</p>
 <p class="last">The split actor sends messages to actors for processing in a round robin fashion. Those actors operate on seperate threads, so if one actor acts quickly and another slowly, the fast actor might process multiple messages before the slow actor finishes its first</p>
 </div>
+</div>
+<div class="section" id="split-and-join-actors">
+<h2>Split and Join Actors<a class="headerlink" href="#split-and-join-actors" title="Permalink to this headline">¶</a></h2>
 <p>Let’s extend that last example so that the worker actors funnel their results to a join actor:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">py_actors.control</span> <span class="k">import</span> <span class="o">*</span>
@@ -191,7 +202,10 @@ This special DoneMessage tells the split actor to gracefully shut down by tellin
 <p class="first admonition-title">Note</p>
 <p class="last">Similar to our last example, telling the split actor it is done with the DoneMessage also alerts it to shut down all children actors (in this case both workers). And when the children actors complete, they also alert the joiner to shut down. The joiner will not shut down until ALL parent actors have told it to</p>
 </div>
-<p>Our final exmaple builds on the last two, and uses a callback so that the join actor’s results can be accessed within the code:</p>
+</div>
+<div class="section" id="split-and-join-actors-with-a-callback">
+<h2>Split and Join Actors with a Callback<a class="headerlink" href="#split-and-join-actors-with-a-callback" title="Permalink to this headline">¶</a></h2>
+<p>Our final example builds on the last two, and uses a callback so that the join actor’s results can be accessed within the code:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">py_actors.control</span> <span class="k">import</span> <span class="o">*</span>
 <span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
@@ -257,13 +271,26 @@ is expensive; the batching of data before spreading and working on messages help
 you as the developer needs to write in order to use those actors is pretty much the same as regular Join and Split Actors</p>
 <p>Hopefully this was a decent introduction to using Actors, but please drop a line if you’d like to give me feedback!</p>
 </div>
+</div>
 
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Code Examples</a><ul>
+<li><a class="reference internal" href="#basic-actor">Basic Actor</a></li>
+<li><a class="reference internal" href="#countdown-actor">Countdown Actor</a></li>
+<li><a class="reference internal" href="#split-actor">Split Actor</a></li>
+<li><a class="reference internal" href="#split-and-join-actors">Split and Join Actors</a></li>
+<li><a class="reference internal" href="#split-and-join-actors-with-a-callback">Split and Join Actors with a Callback</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>

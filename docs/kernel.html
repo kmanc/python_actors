@@ -33,6 +33,13 @@
             
   <div class="section" id="kernel-reference">
 <h1>Kernel Reference<a class="headerlink" href="#kernel-reference" title="Permalink to this headline">¶</a></h1>
+<div class="admonition warning">
+<p class="first admonition-title">Warning</p>
+<p class="last">You as the developer should not have to use any kernel methods aside from start, submit, and shutdown.</p>
+</div>
+<div class="section" id="microkernel">
+<h2>MicroKernel<a class="headerlink" href="#microkernel" title="Permalink to this headline">¶</a></h2>
+<hr class="docutils" />
 <dl class="class">
 <dt id="py_actors.micro_kernel.MicroKernel">
 <em class="property">class </em><code class="descclassname">py_actors.micro_kernel.</code><code class="descname">MicroKernel</code><a class="headerlink" href="#py_actors.micro_kernel.MicroKernel" title="Permalink to this definition">¶</a></dt>
@@ -52,7 +59,9 @@
 <dl class="method">
 <dt id="py_actors.micro_kernel.MicroKernel.shutdown">
 <code class="descname">shutdown</code><span class="sig-paren">(</span><em>immediate=True</em><span class="sig-paren">)</span><a class="headerlink" href="#py_actors.micro_kernel.MicroKernel.shutdown" title="Permalink to this definition">¶</a></dt>
-<dd><p>Shut the kernel down</p>
+<dd><p>Shut the kernel down. When immediate is set to True, all active actors will be terminated, and unprocessed
+messages will be dropped. If immediate is set to False, actors will finish processing all messages in their
+queue at the time shutdown was called</p>
 </dd></dl>
 
 <dl class="method">
@@ -70,13 +79,22 @@
 </dd></dl>
 
 </div>
+</div>
 
 
           </div>
         </div>
       </div>
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
-        <div class="sphinxsidebarwrapper"><div class="relations">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table Of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Kernel Reference</a><ul>
+<li><a class="reference internal" href="#microkernel">MicroKernel</a></li>
+</ul>
+</li>
+</ul>
+<div class="relations">
 <h3>Related Topics</h3>
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>

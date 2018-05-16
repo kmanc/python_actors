@@ -1,15 +1,9 @@
-import os
 from setuptools import setup
-
-
-# Utility function to read the README.md file.
-def read(filename):
-    return open(os.path.join(os.path.dirname(__file__), filename)).read()
 
 
 setup(
     name="py_actors",
-    version="0.0.5",
+    version="0.0.6",
     author="Kevin Conley",
     author_email="kmanc@comcast.net",
     description="Actor implementation in Python",
@@ -17,7 +11,8 @@ setup(
     keywords="Python, Actor, Concurrency, Parallelism",
     url="https://github.com/kmanc/py_actors",
     packages=['py_actors'],
-    long_description=read('README.md'),
+    long_description='A package designed to abstract parts of the actor model so that a developer can write clean, '
+                     'actor-driven Python code. See documentation at https://kmanc.github.io/python_actors/',
     python_requires='>=3.6',
     classifiers=[
         "Development Status :: 5 - Production/Stable",

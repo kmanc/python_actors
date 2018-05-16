@@ -1,6 +1,13 @@
+****************
 Kernel Reference
-================
+****************
 
+.. warning:: You as the developer should not have to use any kernel methods aside from start, submit, and shutdown.
+
+MicroKernel
+###########
+
+_________________________________________________
 
 .. autoclass:: py_actors.micro_kernel.MicroKernel
    :members:

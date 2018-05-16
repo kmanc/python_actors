@@ -1,0 +1,14 @@
+Control Reference
+=================
+
+
+.. autoclass:: py_actors.control.CallbackFuture
+   :members:
+
+
+.. autoclass:: py_actors.control.DoneMessage
+   :members:
+
+
+.. autoclass:: py_actors.control.FlushMessage
+   :members:

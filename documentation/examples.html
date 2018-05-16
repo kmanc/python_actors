@@ -1,0 +1,313 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Code Examples &#8212; py_actors 0.0.5 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript" src="_static/documentation_options.js"></script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Kernel Reference" href="kernel.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head><body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="code-examples">
+<h1>Code Examples<a class="headerlink" href="#code-examples" title="Permalink to this headline">¶</a></h1>
+<p>This is a simple example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
+
+
+<span class="k">class</span> <span class="nc">SampleActor</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="c1"># Complicated work here</span>
+        <span class="n">new_message</span> <span class="o">=</span> <span class="n">message</span> <span class="o">*</span> <span class="mi">4</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">new_message</span><span class="p">)</span>
+
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">MicroKernel</span><span class="p">()</span>
+<span class="n">worker_actor</span> <span class="o">=</span> <span class="n">SampleActor</span><span class="p">()</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;worker_actor_name&#39;</span><span class="p">,</span> <span class="n">worker_actor</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">is_complete</span> <span class="o">=</span> <span class="kc">True</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">immediate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This might not be the most interesting Actor you’ve seen on screen, but it gets the job done:</p>
+<ul class="simple">
+<li>You set up an actor by defining its on_receive</li>
+<li>You created kernel and actor instances</li>
+<li>You submitted the actor to the kernel</li>
+<li>You posted two messages to the actor</li>
+<li>You told the actor that it was done manually (this isn’t ideal, we’ll cover that later with control messages)</li>
+<li>You told the kernel to shut itself down with immediate=False so that any job not-yet-completed has a chance to finish before shutting down the kernel</li>
+<li>If you ran this code, you’d get two prints, 16 and 40</li>
+</ul>
+<p>This is an example of a countdown actor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
+
+
+<span class="k">class</span> <span class="nc">SampleCountDown</span><span class="p">(</span><span class="n">CountdownActor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="c1"># Complicated work here</span>
+        <span class="n">new_message</span> <span class="o">=</span> <span class="n">message</span> <span class="o">*</span> <span class="mi">4</span>
+        <span class="nb">print</span><span class="p">(</span><span class="n">new_message</span><span class="p">)</span>
+
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">MicroKernel</span><span class="p">()</span>
+<span class="n">countdown_actor</span> <span class="o">=</span> <span class="n">SampleCountDown</span><span class="p">(</span><span class="n">count</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;countdown_actor_name&#39;</span><span class="p">,</span> <span class="n">countdown_actor</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">worker_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">immediate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>This time you did the following:</p>
+<ul class="simple">
+<li>You set up an actor by defining its on_receive</li>
+<li>You created kernel and actor instances, defining how many messages you want your actor to process before shutting down</li>
+<li>You submitted the actor to the kernel</li>
+<li>You posted five messages to the actor</li>
+<li>You told the kernel to shut itself down with immediate=False so that all messages are guaranteed to complete before the kernel shuts down</li>
+<li>Notice this time you didn’t have to tell the actor it was done; it knew to mark itself as complete after processing five messages</li>
+<li>If you ran this code, you’d get five prints: 4, 8, 12, 16, and 20</li>
+</ul>
+<p>This is an example of a split actor being used to split work among worker actors:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.control</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
+
+
+<span class="k">class</span> <span class="nc">SampleActor</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">==</span> <span class="n">DoneMessage</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Complicated work here</span>
+            <span class="n">new_message</span> <span class="o">=</span> <span class="n">message</span> <span class="o">*</span> <span class="mi">4</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">new_message</span><span class="p">)</span>
+
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">MicroKernel</span><span class="p">()</span>
+<span class="n">worker_actor_1</span> <span class="o">=</span> <span class="n">SampleActor</span><span class="p">()</span>
+<span class="n">worker_actor_2</span> <span class="o">=</span> <span class="n">SampleActor</span><span class="p">()</span>
+<span class="n">split_actor</span> <span class="o">=</span> <span class="n">SplitActor</span><span class="p">([</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="s1">&#39;worker_actor_2&#39;</span><span class="p">])</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="n">worker_actor_1</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;worker_actor_2&#39;</span><span class="p">,</span> <span class="n">worker_actor_2</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;split_actor_name&#39;</span><span class="p">,</span> <span class="n">split_actor</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">DoneMessage</span><span class="p">())</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">immediate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Now things are getting interesting! Let’s see what happened:</p>
+<ul class="simple">
+<li>You set up a worker actor by defining its on_receive</li>
+<li>You created kernel, two actor instances, and a split actor instance, giving it the names of the worker actors so it knows who to delegate to</li>
+<li>You submitted the actors to the kernel</li>
+<li>You posted five messages to the split actor; four regular messages, and a new type of control message called a DoneMessage
+This special DoneMessage tells the split actor to gracefully shut down by telling it to shut down all of its worker actors before shutting down itself</li>
+<li>You told the kernel to shut itself down with immediate=False like normal</li>
+<li>In this case, you will get the prints 4, 8, 12, and 16, but their order is not guaranteed…let’s explore why</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">The split actor sends messages to actors for processing in a round robin fashion. Those actors operate on seperate threads, so if one actor acts quickly and another slowly, the fast actor might process multiple messages before the slow actor finishes its first</p>
+</div>
+<p>Let’s extend that last example so that the worker actors funnel their results to a join actor:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.control</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
+
+
+<span class="k">class</span> <span class="nc">SampleActor</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">==</span> <span class="n">DoneMessage</span><span class="p">:</span>
+            <span class="n">joiner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_lookup</span><span class="p">(</span><span class="s1">&#39;join_actor_name&#39;</span><span class="p">)</span>
+            <span class="n">joiner</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">DoneMessage</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Complicated work here</span>
+            <span class="n">new_message</span> <span class="o">=</span> <span class="n">message</span> <span class="o">*</span> <span class="mi">4</span>
+            <span class="n">joiner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_lookup</span><span class="p">(</span><span class="s1">&#39;join_actor_name&#39;</span><span class="p">)</span>
+            <span class="n">joiner</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">new_message</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">JoinActor</span><span class="p">(</span><span class="n">JoinActor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="nb">print</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">MicroKernel</span><span class="p">()</span>
+<span class="n">worker_actor_1</span> <span class="o">=</span> <span class="n">SampleActor</span><span class="p">()</span>
+<span class="n">worker_actor_2</span> <span class="o">=</span> <span class="n">SampleActor</span><span class="p">()</span>
+<span class="n">split_actor</span> <span class="o">=</span> <span class="n">SplitActor</span><span class="p">([</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="s1">&#39;worker_actor_2&#39;</span><span class="p">])</span>
+<span class="n">join_actor</span> <span class="o">=</span> <span class="n">JoinActor</span><span class="p">([</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="s1">&#39;worker_actor_2&#39;</span><span class="p">])</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="n">worker_actor_1</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;worker_actor_2&#39;</span><span class="p">,</span> <span class="n">worker_actor_2</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;split_actor_name&#39;</span><span class="p">,</span> <span class="n">split_actor</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;join_actor_name&#39;</span><span class="p">,</span> <span class="n">join_actor</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">DoneMessage</span><span class="p">())</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">immediate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Our example has grown so that you’ve done the following:</p>
+<ul class="simple">
+<li>You set up a worker actor by defining its on_receive</li>
+<li>You set up a standard JoinActor, but then over-rode its on_complete method so that you could see the output when it’s done</li>
+<li>You created kernel, two worker actor instances, a splitter actor instance, and a joiner actor instance (the two later actors with the names of the actors they should send and receive messages from, respectively)</li>
+<li>You submitted the actors to the kernel</li>
+<li>You posted five messages to the split actor, four regular messages, and the DoneMessage</li>
+<li>You told the kernel to shut itself down with immediate=False like normal</li>
+<li>Running this should produce a list of the numbers 4, 8, 12, and 16 in some order</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Similar to our last example, telling the split actor it is done with the DoneMessage also alerts it to shut down all children actors (in this case both workers). And when the children actors complete, they also alert the joiner to shut down. The joiner will not shut down until ALL parent actors have told it to</p>
+</div>
+<p>Our final exmaple builds on the last two, and uses a callback so that the join actor’s results can be accessed within the code:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">py_actors.actors</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.control</span> <span class="k">import</span> <span class="o">*</span>
+<span class="kn">from</span> <span class="nn">py_actors.micro_kernel</span> <span class="k">import</span> <span class="n">MicroKernel</span>
+
+
+<span class="k">class</span> <span class="nc">SampleActor</span><span class="p">(</span><span class="n">Actor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">on_receive</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">message</span><span class="p">):</span>
+        <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">message</span><span class="p">)</span> <span class="o">==</span> <span class="n">DoneMessage</span><span class="p">:</span>
+            <span class="n">joiner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_lookup</span><span class="p">(</span><span class="s1">&#39;join_actor_name&#39;</span><span class="p">)</span>
+            <span class="n">joiner</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">DoneMessage</span><span class="p">())</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">is_complete</span> <span class="o">=</span> <span class="kc">True</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="c1"># Complicated work here</span>
+            <span class="n">new_message</span> <span class="o">=</span> <span class="n">message</span> <span class="o">*</span> <span class="mi">4</span>
+            <span class="n">joiner</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">do_lookup</span><span class="p">(</span><span class="s1">&#39;join_actor_name&#39;</span><span class="p">)</span>
+            <span class="n">joiner</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">new_message</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">JoinActorCallback</span><span class="p">(</span><span class="n">JoinActor</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key_list</span><span class="p">,</span> <span class="n">cb</span><span class="p">):</span>
+        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">key_list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cb</span> <span class="o">=</span> <span class="n">cb</span>
+
+    <span class="k">def</span> <span class="nf">on_complete</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cb</span><span class="o">.</span><span class="n">callback</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">results</span><span class="p">)</span>
+
+<span class="n">kernel</span> <span class="o">=</span> <span class="n">MicroKernel</span><span class="p">()</span>
+<span class="n">worker_actor_1</span> <span class="o">=</span> <span class="n">SampleActor</span><span class="p">()</span>
+<span class="n">worker_actor_2</span> <span class="o">=</span> <span class="n">SampleActor</span><span class="p">()</span>
+<span class="n">split_actor</span> <span class="o">=</span> <span class="n">SplitActor</span><span class="p">([</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="s1">&#39;worker_actor_2&#39;</span><span class="p">])</span>
+<span class="n">call</span> <span class="o">=</span> <span class="n">CallbackFuture</span><span class="p">()</span>
+<span class="n">join_actor_callback</span> <span class="o">=</span> <span class="n">JoinActorCallback</span><span class="p">([</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="s1">&#39;worker_actor_2&#39;</span><span class="p">],</span> <span class="n">call</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;worker_actor_1&#39;</span><span class="p">,</span> <span class="n">worker_actor_1</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;worker_actor_2&#39;</span><span class="p">,</span> <span class="n">worker_actor_2</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;split_actor_name&#39;</span><span class="p">,</span> <span class="n">split_actor</span><span class="p">)</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">submit</span><span class="p">(</span><span class="s1">&#39;join_actor_callback_name&#39;</span><span class="p">,</span> <span class="n">join_actor_callback</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="mi">4</span><span class="p">)</span>
+<span class="n">split_actor</span><span class="o">.</span><span class="n">post</span><span class="p">(</span><span class="n">DoneMessage</span><span class="p">())</span>
+<span class="n">answers</span> <span class="o">=</span> <span class="n">call</span><span class="o">.</span><span class="n">done</span><span class="p">()</span>
+<span class="n">kernel</span><span class="o">.</span><span class="n">shutdown</span><span class="p">(</span><span class="n">immediate</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">answers</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Well that escalated quickly. Let’s see what you did:</p>
+<ul class="simple">
+<li>You set up a worker actor by defining its on_receive</li>
+<li>You set up a standard JoinActor, but then over-rode its __init__ and on_complete methods. Its __init__ now gives it a callback, and its on_complete calls a method of that callback. This is how we “get the results out” of the actor</li>
+<li>You created kernel and actor instances, once again with the names of actors you expect to send/receive messages from, but this time you also gave the join_actor an instance of the CallbackFuture() class in control</li>
+<li>You submitted the actors to the kernel</li>
+<li>You posted five messages to the actor</li>
+<li>You set the variable “answers” to the return value of “call.done()”. This is abstracted away so that you don’t have to worry about it, but it basically allows you to access the results of the actor outside of the actor itself</li>
+<li>You told the kernel to shut itself down with immediate=False like normal</li>
+<li>You printed the variable “answers” which, like before, is a list containing 4, 8, 12, and 16 in some order</li>
+</ul>
+<div class="admonition note">
+<p class="first admonition-title">Note</p>
+<p class="last">Callbacks like this are really useful when you are trying run expensive functions across many actors for performance reasons in in-line code. If your actor’s “work” is to send data to a database, or some other resource outside of the in-line code, they are not very useful</p>
+</div>
+<p>At this point it is work calling out that BatchJoin and BatchSplit Actors exist for cases where communication between Actors
+is expensive; the batching of data before spreading and working on messages helps improve performance, but the code that
+you as the developer needs to write in order to use those actors is pretty much the same as regular Join and Split Actors</p>
+<p>Hopefully this was a decent introduction to using Actors, but please drop a line if you’d like to give me feedback!</p>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper"><div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="kernel.html" title="previous chapter">Kernel Reference</a></li>
+  </ul></li>
+</ul>
+</div>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/examples.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    </div>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2018, Kevin Conley.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.7.4</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/examples.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
